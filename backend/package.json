@@ -1,13 +1,17 @@
 {
-  "name": "rapidacq-backend",
+  "name": "acquisition-assistant-backend",
   "version": "1.0.0",
+  "description": "Backend API for RapidAcq acquisition tools",
   "main": "server.js",
-  "type": "commonjs",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "google-auth-library": "^9.0.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
