@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Shield, Zap, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
 import { api } from '@/lib/api';
 
 export default function Home() {
   const [apiStatus, setApiStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
-  const [apiMessage, setApiMessage] = useState<string>('');
+  const [apiMessage, setApiMessage] = useState('');
 
   useEffect(() => {
-    // Check backend connection on page load
     const checkConnection = async () => {
       const result = await api.healthCheck();
       if (result.success) {
@@ -21,7 +20,6 @@ export default function Home() {
         setApiMessage(result.error || 'Unable to connect to backend');
       }
     };
-
     checkConnection();
   }, []);
 
@@ -30,9 +28,8 @@ export default function Home() {
       <nav className="border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <span className="text-2xl font-bold text-blue-600">RapidAcq</span>
+            <Link href="/" className="text-2xl font-bold text-blue-600">RapidAcq</Link>
             <div className="flex items-center space-x-4">
-              {/* API Status Indicator */}
               <div className="flex items-center space-x-2 text-sm">
                 {apiStatus === 'checking' && (
                   <span className="text-gray-500">Checking API...</span>
@@ -50,6 +47,7 @@ export default function Home() {
                   </>
                 )}
               </div>
+              <Link href="/tools" className="text-gray-700 hover:text-blue-600 font-medium">Tools</Link>
               <Link href="/login" className="text-gray-700">Sign In</Link>
               <Link href="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</Link>
             </div>
@@ -59,7 +57,6 @@ export default function Home() {
 
       <section className="pt-20 pb-16 px-4 text-center">
         <div className="max-w-7xl mx-auto">
-          {/* Backend Status Banner */}
           {apiStatus === 'connected' && (
             <div className="mb-8 inline-flex items-center bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
               <CheckCircle className="h-4 w-4 mr-2" />
@@ -74,15 +71,20 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Streamline your acquisition process with intelligent tools for SOWs, market research, and compliance.
           </p>
-          <Link href="/signup" className="inline-flex items-center bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold">
-            Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          <div className="flex justify-center gap-4">
+            <Link href="/tools" className="inline-flex items-center bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
+              Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+            <Link href="/signup" className="inline-flex items-center border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-50">
+              Start Free Trial
+            </Link>
+          </div>
         </div>
       </section>
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16">Features</h2>
+          <h2 className="text-4xl font-bold text-center mb-16">9 Powerful Acquisition Tools</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-8 rounded-xl shadow-sm">
               <Zap className="h-12 w-12 text-blue-600 mb-4" />
@@ -100,14 +102,16 @@ export default function Home() {
               <p className="text-gray-600">Automated compliance checking</p>
             </div>
           </div>
+          <div className="text-center mt-8">
+            <Link href="/tools" className="text-blue-600 hover:text-blue-700 font-semibold">
+              View All 9 Tools →
+            </Link>
+          </div>
         </div>
       </section>
 
       <footer className="bg-gray-900 text-gray-400 py-12 text-center">
         <p>© 2025 RapidAcq. All rights reserved.</p>
-        {apiMessage && (
-          <p className="text-sm mt-2 text-gray-500">{apiMessage}</p>
-        )}
       </footer>
     </div>
   );

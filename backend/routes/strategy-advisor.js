@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises;
-const path = require('path');
+const kb = require('../knowledge-base-loader');
+const { buildGuardrailPrompt, getToolSpecificGuardrails } = require('../guardrails');
 
 router.post('/strategy-advisor', async (req, res) => {
   try {
@@ -11,30 +11,30 @@ router.post('/strategy-advisor', async (req, res) => {
       return res.status(400).json({ error: 'Requirement description is required' });
     }
 
-    // Load Agile Acquisition Principles
-    const principlesPath = path.join('/workspaces/Acquisition-Assistant/knowledge-base/Agile-Acquisition-Principles.md');
-    let principles = '';
-    try {
-      principles = await fs.readFile(principlesPath, 'utf-8');
-    } catch (error) {
-      console.warn('Agile principles not found');
-    }
+    const agileGuidelines = await kb.getAgileGuidelines();
+    const guardrails = buildGuardrailPrompt();
+    const strategyGuardrails = getToolSpecificGuardrails('strategy-advisor');
 
-    const systemPrompt = `You are an expert federal acquisition strategist specializing in alternative acquisition authorities.
+    const systemPrompt = `You are an expert agile acquisition strategist who challenges traditional approaches.
 
-${principles ? `Follow these agile acquisition principles:\n${principles}\n\n` : ''}
+${guardrails}
 
-Provide strategic recommendations for:
-- Best acquisition vehicle (FAR Part 15, FAR Part 12, OTA, CSO, SBIR Phase III)
-- Contract type selection
-- Competition strategy
-- Risk mitigation
-- Timeline optimization
-- Small business considerations
+${strategyGuardrails}
 
-Consider all modern acquisition tools and authorities.`;
+${agileGuidelines ? `AGILE METHODOLOGY:\n${agileGuidelines}\n\n` : ''}
 
-    const userPrompt = `Recommend acquisition strategy for:
+CRITICAL: Your recommendations must:
+1. START WITH USER OUTCOMES - Define success from mission/user perspective
+2. DESIGN FOR MODULARITY - Break into phases, create competitive onramps
+3. ENABLE VENDOR DIVERSITY - Mix contract types, multiple entry points
+4. CHALLENGE DEFAULTS - Don't default to GSA schedules or traditional FAR Part 15
+5. RECOMMEND CONCRETE VEHICLES - OTAs, CSOs, BPAs, SBIR Phase III with specific justification
+6. CONSIDER NON-TRADITIONAL VENDORS - Make space for startups and small businesses
+7. BUILD IN FLEXIBILITY - Design contracts that enable pivots and iteration
+
+Push back against waterfall thinking. Be direct about tradeoffs.`;
+
+    const userPrompt = `Recommend agile acquisition strategy for:
 
 **Requirement:** ${requirement}
 
@@ -46,13 +46,17 @@ ${complexity ? `**Complexity:** ${complexity}\n\n` : ''}
 
 ${incumbentStatus ? `**Incumbent Status:** ${incumbentStatus}\n\n` : ''}
 
-Provide comprehensive strategy recommendations including:
-1. Recommended Acquisition Vehicle (with justification)
-2. Contract Type Recommendation
-3. Competition Strategy
-4. Timeline and Milestones
-5. Risk Assessment and Mitigation
-6. Alternative Approaches to Consider`;
+Provide AGILE strategy including:
+1. **Recommended Vehicle** (OTA, CSO, BPA, FAR Part 12/15, SBIR Phase III) with specific justification
+2. **Modular Approach** - How to break into phases/increments
+3. **Contract Structure** - Type (FFP per iteration, T&M, LOE) and why
+4. **Competition Strategy** - Challenge-based? Tech demos? Phased downselect?
+5. **Vendor Diversity** - How to enable non-traditionals and small business
+6. **Risk Mitigation** - Smart risks with bounded cost/time
+7. **Timeline** - Realistic, MVP-focused milestones
+8. **Exit Strategy** - How to pivot if needed
+
+Be specific. Challenge assumptions. Recommend the AGILE path, not just the safe one.`;
 
     const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
     
@@ -92,7 +96,8 @@ Provide comprehensive strategy recommendations including:
       metadata: {
         requirement,
         generatedAt: new Date().toISOString(),
-        tool: 'Acquisition Strategy Advisor'
+        tool: 'Acquisition Strategy Advisor',
+        principles: 'Agile Acquisition with Evidence-Based Strategy'
       }
     });
 
