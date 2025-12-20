@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:proxy": "node dev-proxy.js",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:proxy\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

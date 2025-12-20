@@ -1,7 +1,30 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Shield, Zap, TrendingUp } from 'lucide-react';
+import { ArrowRight, Shield, Zap, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { api } from '@/lib/api';
 
 export default function Home() {
+  const [apiStatus, setApiStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+  const [apiMessage, setApiMessage] = useState<string>('');
+
+  useEffect(() => {
+    // Check backend connection on page load
+    const checkConnection = async () => {
+      const result = await api.healthCheck();
+      if (result.success) {
+        setApiStatus('connected');
+        setApiMessage('Backend connected successfully');
+      } else {
+        setApiStatus('disconnected');
+        setApiMessage(result.error || 'Unable to connect to backend');
+      }
+    };
+
+    checkConnection();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       <nav className="border-b border-gray-200">
@@ -9,6 +32,24 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <span className="text-2xl font-bold text-blue-600">RapidAcq</span>
             <div className="flex items-center space-x-4">
+              {/* API Status Indicator */}
+              <div className="flex items-center space-x-2 text-sm">
+                {apiStatus === 'checking' && (
+                  <span className="text-gray-500">Checking API...</span>
+                )}
+                {apiStatus === 'connected' && (
+                  <>
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-green-600">API Connected</span>
+                  </>
+                )}
+                {apiStatus === 'disconnected' && (
+                  <>
+                    <XCircle className="h-4 w-4 text-red-500" />
+                    <span className="text-red-600">API Offline</span>
+                  </>
+                )}
+              </div>
               <Link href="/login" className="text-gray-700">Sign In</Link>
               <Link href="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-lg">Get Started</Link>
             </div>
@@ -18,6 +59,14 @@ export default function Home() {
 
       <section className="pt-20 pb-16 px-4 text-center">
         <div className="max-w-7xl mx-auto">
+          {/* Backend Status Banner */}
+          {apiStatus === 'connected' && (
+            <div className="mb-8 inline-flex items-center bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Connected to Google Cloud Backend
+            </div>
+          )}
+          
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
             Transform Federal Acquisition<br />
             <span className="text-blue-600">with AI-Powered Intelligence</span>
@@ -56,6 +105,9 @@ export default function Home() {
 
       <footer className="bg-gray-900 text-gray-400 py-12 text-center">
         <p>© 2025 RapidAcq. All rights reserved.</p>
+        {apiMessage && (
+          <p className="text-sm mt-2 text-gray-500">{apiMessage}</p>
+        )}
       </footer>
     </div>
   );
