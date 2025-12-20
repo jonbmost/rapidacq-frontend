@@ -4,90 +4,94 @@ import { FileText, Search, Lightbulb, FileCheck, Shield, Rocket, Code, Users, Fi
 const tools = [
   {
     name: 'SOW Generator',
-    description: 'Create professional Statements of Objectives in minutes',
+    description: 'Create professional Statements of Objectives with agile guardrails',
     icon: FileText,
     href: '/tools/sow-generator',
-    color: 'blue'
+    color: 'uswds-blue'
   },
   {
     name: 'Market Research',
     description: 'Comprehensive vendor landscape and competitive analysis',
     icon: Search,
     href: '/tools/market-research',
-    color: 'green'
+    color: 'uswds-green'
   },
   {
     name: 'Strategy Advisor',
-    description: 'Get recommendations on acquisition vehicles and approaches',
+    description: 'Evidence-based acquisition vehicle recommendations',
     icon: Lightbulb,
     href: '/tools/strategy-advisor',
-    color: 'purple'
+    color: 'uswds-gold'
   },
   {
     name: 'Contract Review',
-    description: 'Identify risks and get improvement recommendations',
+    description: 'Risk identification and improvement recommendations',
     icon: FileCheck,
     href: '/tools/contract-review',
-    color: 'orange'
+    color: 'uswds-red-warm'
   },
   {
     name: 'FAR Compliance',
-    description: 'Check compliance with automated FAR analysis',
+    description: 'Automated compliance checking with FAR citations',
     icon: Shield,
     href: '/tools/far-compliance',
-    color: 'red'
+    color: 'uswds-blue-70'
   },
   {
     name: 'SBIR Transition',
     description: 'Navigate SBIR Phase III transition pathways',
     icon: Rocket,
     href: '/tools/sbir-transition',
-    color: 'indigo'
+    color: 'uswds-blue-50'
   },
   {
     name: 'Agile Planner',
     description: 'Design modular contracting and sprint strategies',
     icon: Code,
     href: '/tools/agile-planner',
-    color: 'cyan'
+    color: 'uswds-green-cool'
   },
   {
     name: 'PM/COR Coordinator',
     description: 'Coordinate program management and oversight',
     icon: Users,
     href: '/tools/pm-cor-coordinator',
-    color: 'pink'
+    color: 'uswds-gold'
   },
   {
     name: 'RFP Generator',
-    description: 'Create professional RFPs and RFIs',
+    description: 'Create professional solicitation documents',
     icon: FileSignature,
     href: '/tools/rfp-generator',
-    color: 'amber'
+    color: 'uswds-blue-60'
   }
 ];
 
-const colorClasses: Record<string, string> = {
-  blue: 'bg-blue-100 text-blue-600',
-  green: 'bg-green-100 text-green-600',
-  purple: 'bg-purple-100 text-purple-600',
-  orange: 'bg-orange-100 text-orange-600',
-  red: 'bg-red-100 text-red-600',
-  indigo: 'bg-indigo-100 text-indigo-600',
-  cyan: 'bg-cyan-100 text-cyan-600',
-  pink: 'bg-pink-100 text-pink-600',
-  amber: 'bg-amber-100 text-amber-600',
-};
-
 export default function ToolsPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Acquisition Tools</h1>
-          <p className="text-xl text-gray-600">AI-powered tools to streamline your federal acquisition process</p>
+    <div className="min-h-screen bg-uswds-gray-5">
+      {/* USWDS Banner */}
+      <div className="bg-white border-b border-uswds-gray-30">
+        <div className="max-w-7xl mx-auto px-4 py-1 text-xs text-uswds-gray-70">
+          An official website of the United States government
         </div>
+      </div>
 
+      {/* Header */}
+      <div className="bg-uswds-blue text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="text-white/80 hover:text-white mb-4 inline-block">
+            ← Back to Home
+          </Link>
+          <h1 className="text-4xl font-bold mb-2 font-serif">Acquisition Tools</h1>
+          <p className="text-xl text-uswds-blue-20">
+            AI-powered tools built on agile acquisition principles
+          </p>
+        </div>
+      </div>
+
+      {/* Tools Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
             const Icon = tool.icon;
@@ -95,13 +99,13 @@ export default function ToolsPage() {
               <Link
                 key={tool.name}
                 href={tool.href}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200"
+                className="bg-white p-6 rounded border-2 border-uswds-gray-10 hover:border-uswds-blue transition-all shadow-sm hover:shadow-md"
               >
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${colorClasses[tool.color]}`}>
-                  <Icon className="h-6 w-6" />
+                <div className={`w-12 h-12 rounded bg-${tool.color}/10 flex items-center justify-center mb-4`}>
+                  <Icon className={`h-6 w-6 text-${tool.color}`} />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{tool.name}</h3>
-                <p className="text-gray-600">{tool.description}</p>
+                <h3 className="text-xl font-semibold text-uswds-gray-90 mb-2">{tool.name}</h3>
+                <p className="text-uswds-gray-70">{tool.description}</p>
               </Link>
             );
           })}
