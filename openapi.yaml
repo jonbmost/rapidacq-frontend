@@ -1,0 +1,35 @@
+openapi: 3.0.0
+info:
+  title: RapidAcq API
+  version: 1.0.0
+paths:
+  /{proxy+}:
+    parameters:
+      - name: proxy
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: proxyGet
+      x-google-backend:
+        address: https://rapidacq-api-suojmotvaq-uc.a.run.app
+      responses:
+        '200':
+          description: A successful response
+    post:
+      operationId: proxyPost
+      x-google-backend:
+        address: https://rapidacq-api-suojmotvaq-uc.a.run.app
+      responses:
+        '200':
+          description: A successful response
+    options:
+      operationId: proxyOptions
+      x-google-backend:
+        address: https://rapidacq-api-suojmotvaq-uc.a.run.app
+      responses:
+        '200':
+          description: CORS preflight
+servers:
+  - url: https://GATEWAY_URL_PLACEHOLDER
