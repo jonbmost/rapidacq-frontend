@@ -7,7 +7,7 @@ const app = express();
 
 // Enable CORS
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Increase limit for large contract texts
+app.use(express.json({ limit: '10mb' }));
 
 // Health check (public)
 app.get('/', (req, res) => {
@@ -24,7 +24,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-// Import all tool routes
+// Import all routes
 const sowGenerator = require('./routes/sow-generator');
 const marketResearch = require('./routes/market-research');
 const strategyAdvisor = require('./routes/strategy-advisor');
@@ -34,6 +34,10 @@ const sbirTransition = require('./routes/sbir-transition');
 const agilePlanner = require('./routes/agile-planner');
 const pmCorCoordinator = require('./routes/pm-cor-coordinator');
 const rfpGenerator = require('./routes/rfp-generator');
+const organizations = require('./routes/organizations');
+
+// Public routes (no auth required)
+app.use('/api', organizations);
 
 // Protected routes (require auth - currently allowing all for testing)
 app.use(verifyGoogleToken);
@@ -70,4 +74,5 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Acquisition Assistant Backend running on port ${PORT}`);
   console.log(`📊 9 acquisition tools available`);
+  console.log(`🏢 Organization management enabled`);
 });
