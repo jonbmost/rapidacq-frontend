@@ -22,7 +22,6 @@ export default function Home() {
       <div className="bg-uswds-gray-5 border-b border-uswds-gray-30">
         <div className="max-w-7xl mx-auto px-4 py-1">
           <div className="flex items-center text-xs text-uswds-gray-70">
-            <img src="/us-flag.svg" alt="U.S. Flag" className="h-3 mr-2" />
             An official website of the United States government
           </div>
         </div>
@@ -56,14 +55,11 @@ export default function Home() {
                 )}
               </div>
 
-              <Link href="/tools" className="text-uswds-gray-70 hover:text-uswds-blue-70 font-medium">
-                Tools
-              </Link>
-              <Link href="/login" className="text-uswds-gray-70 hover:text-uswds-blue-70">
+              <Link href="/dashboard" className="text-uswds-gray-70 hover:text-uswds-blue-70">
                 Sign In
               </Link>
               <Link 
-                href="/tools" 
+                href="/onboarding" 
                 className="bg-uswds-blue text-white px-4 py-2 rounded hover:bg-uswds-blue-70 font-medium"
               >
                 Get Started
@@ -95,16 +91,16 @@ export default function Home() {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
-              href="/tools" 
+              href="/onboarding" 
               className="inline-flex items-center justify-center bg-uswds-blue text-white px-8 py-3 rounded text-lg font-semibold hover:bg-uswds-blue-70"
             >
-              Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
+              Get Started <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link 
-              href="/signup" 
+              href="/dashboard" 
               className="inline-flex items-center justify-center border-2 border-uswds-blue text-uswds-blue px-8 py-3 rounded text-lg font-semibold hover:bg-uswds-blue-5"
             >
-              Start Free Trial
+              Sign In
             </Link>
           </div>
         </div>
@@ -147,8 +143,11 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-8">
-            <Link href="/tools" className="text-uswds-blue hover:text-uswds-blue-70 font-semibold text-lg">
-              View All 9 Tools →
+            <p className="text-uswds-gray-70 mb-4">
+              Ready to transform your acquisition process?
+            </p>
+            <Link href="/onboarding" className="text-uswds-blue hover:text-uswds-blue-70 font-semibold text-lg">
+              Get Started Today →
             </Link>
           </div>
         </div>
@@ -165,11 +164,10 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <h4 className="font-bold mb-4">Tools</h4>
+              <h4 className="font-bold mb-4">Get Started</h4>
               <ul className="space-y-2 text-uswds-gray-30 text-sm">
-                <li><Link href="/tools/sow-generator" className="hover:text-white">SOW Generator</Link></li>
-                <li><Link href="/tools/strategy-advisor" className="hover:text-white">Strategy Advisor</Link></li>
-                <li><Link href="/tools/far-compliance" className="hover:text-white">FAR Compliance</Link></li>
+                <li><Link href="/onboarding" className="hover:text-white">Create Account</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white">Sign In</Link></li>
               </ul>
             </div>
             <div>
