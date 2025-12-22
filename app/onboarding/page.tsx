@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building2, User, Phone, Mail, Target, Users as UsersIcon, DollarSign, AlertCircle } from 'lucide-react';
+import { Building2, User, Phone, Mail, Target, Users as UsersIcon, DollarSign, AlertCircle, Lock } from 'lucide-react';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -16,6 +16,8 @@ export default function OnboardingPage() {
     contactName: '',
     contactEmail: '',
     contactPhone: '',
+    password: '',
+    confirmPassword: '',
     acquisitionPriorities: [] as string[],
     teamSize: '',
     annualVolume: '',
@@ -57,25 +59,55 @@ export default function OnboardingPage() {
     setLoading(true);
     setError('');
 
+    // Validate passwords
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/organizations`, {
+      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
+      
+      // Step 1: Create organization
+      const orgResponse = await fetch(`${BACKEND_URL}/api/organizations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      const orgData = await orgResponse.json();
+      if (!orgData.success) throw new Error(orgData.error || 'Failed to create organization');
 
-      if (data.success) {
-        // Store org ID in localStorage for now (later: use proper auth)
-        localStorage.setItem('organizationId', data.organization.id);
-        localStorage.setItem('organizationName', data.organization.organizationName);
-        
-        // Redirect to dashboard
-        router.push('/dashboard');
-      } else {
-        setError(data.error || 'Failed to create organization');
-      }
+      // Step 2: Create user account
+      const userResponse = await fetch(`${BACKEND_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.contactEmail,
+          password: formData.password,
+          organizationId: orgData.organization.id,
+          organizationName: orgData.organization.organizationName
+        })
+      });
+
+      const userData = await userResponse.json();
+      if (!userData.success) throw new Error(userData.error || 'Failed to create user account');
+
+      // Step 3: Store auth and redirect
+      localStorage.setItem('userId', userData.user.id);
+      localStorage.setItem('userEmail', userData.user.email);
+      localStorage.setItem('organizationId', userData.user.organizationId);
+      localStorage.setItem('organizationName', userData.user.organizationName);
+      localStorage.setItem('authToken', userData.token);
+
+      router.push('/dashboard');
+
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
@@ -217,6 +249,49 @@ export default function OnboardingPage() {
                   />
                 </div>
 
+                {/* Password Section */}
+                <div className="border-t-2 border-uswds-gray-10 pt-6 mt-6">
+                  <h3 className="text-lg font-bold text-uswds-gray-90 mb-4 flex items-center">
+                    <Lock className="inline h-5 w-5 mr-2" />
+                    Create Your Account
+                  </h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+                        Password *
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        className="w-full px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                        placeholder="Minimum 6 characters"
+                        minLength={6}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+                        Confirm Password *
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                        className="w-full px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                        placeholder="Re-enter password"
+                      />
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-uswds-gray-70 mt-2">
+                    You'll use this email and password to sign in to RapidAcq
+                  </p>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => setStep(2)}
@@ -328,8 +403,8 @@ export default function OnboardingPage() {
                 </div>
 
                 {error && (
-                  <div className="p-4 bg-uswds-red-5 border-2 border-uswds-red-warm text-uswds-red-warm rounded">
-                    {error}
+                  <div className="p-4 bg-red-50 border-2 border-red-200 text-red-700 rounded">
+                    <strong>Error:</strong> {error}
                   </div>
                 )}
 
