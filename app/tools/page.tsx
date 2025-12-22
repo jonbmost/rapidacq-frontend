@@ -85,10 +85,6 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-uswds-gray-5">
       {/* USWDS Banner */}
-      <div className="bg-white border-b border-uswds-gray-30">
-        <div className="max-w-7xl mx-auto px-4 py-1 text-xs text-uswds-gray-70">
-          An official website of the United States government
-        </div>
       </div>
 
       {/* Header */}
