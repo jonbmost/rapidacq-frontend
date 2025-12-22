@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FileText, Search, Lightbulb, Building2, LogOut, MessageSquare } from 'lucide-react';
+import { FileText, Search, Lightbulb, Building2, LogOut, MessageSquare, Target, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Book } from 'lucide-react';
 import AcquisitionChatbot from '@/components/AcquisitionChatbot';
 
 export default function DashboardPage() {
@@ -32,20 +32,20 @@ export default function DashboardPage() {
   };
 
   const quickTools = [
-    { name: 'SOW Generator', icon: FileText, href: '/tools/sow-generator', color: 'uswds-blue' },
-    { name: 'Market Research', icon: Search, href: '/tools/market-research', color: 'uswds-green' },
-    { name: 'Strategy Advisor', icon: Lightbulb, href: '/tools/strategy-advisor', color: 'uswds-gold' },
+    { name: 'Acquisition Strategy', icon: Target, href: '/tools/acquisition-strategy', description: 'Develop comprehensive acquisition strategies' },
+    { name: 'Requirement Documents', icon: FileText, href: '/tools/requirement-documents', description: 'Generate SOWs, PWS, and requirements' },
+    { name: 'Market Analysis', icon: TrendingUp, href: '/tools/market-analysis', description: 'Conduct market research and vendor analysis' },
+    { name: 'Evaluation Criteria', icon: CheckCircle, href: '/tools/evaluation-criteria', description: 'Create objective evaluation criteria' },
+    { name: 'SOP Creation', icon: FileCheck, href: '/tools/sop-creation', description: 'Develop standardized operating procedures' },
+    { name: 'Stakeholder Mapping', icon: Users, href: '/tools/stakeholder-mapping', description: 'Identify and analyze key stakeholders' },
+    { name: 'Authority Needs Assessment', icon: Shield, href: '/tools/authority-assessment', description: 'Determine optimal acquisition authority' },
+    { name: 'Slide Ranger', icon: Presentation, href: '/tools/slide-ranger', description: 'Generate professional presentations' },
+    { name: 'Document Analysis', icon: Search, href: '/tools/document-analysis', description: 'Review contracts and documents' },
+    { name: 'Regs & Policy', icon: Book, href: '/tools/regs-policy', description: 'FAR and policy quick reference' },
   ];
 
   return (
     <div className="min-h-screen bg-uswds-gray-5">
-      {/* USWDS Banner */}
-      <div className="bg-white border-b border-uswds-gray-30">
-        <div className="max-w-7xl mx-auto px-4 py-1 text-xs text-uswds-gray-70">
-          An official website of the United States government
-        </div>
-      </div>
-
       {/* Top Navigation */}
       <nav className="bg-uswds-blue text-white">
         <div className="max-w-7xl mx-auto px-4 py-4">
@@ -86,40 +86,27 @@ export default function DashboardPage() {
           <div>
             <h2 className="text-2xl font-bold text-uswds-gray-90 mb-4 flex items-center">
               <FileText className="h-6 w-6 mr-2" />
-              Quick Access Tools
+              All Services
             </h2>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 mb-6">
               {quickTools.map((tool) => {
                 const Icon = tool.icon;
                 return (
                   <Link
                     key={tool.name}
                     href={tool.href}
-                    className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition-all flex items-center"
+                    className="bg-white p-4 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition-all flex items-center"
                   >
-                    <div className={`w-12 h-12 rounded bg-uswds-blue-5 flex items-center justify-center mr-4`}>
-                      <Icon className={`h-6 w-6 text-uswds-blue`} />
+                    <div className="w-10 h-10 rounded bg-uswds-blue-5 flex items-center justify-center mr-3">
+                      <Icon className="h-5 w-5 text-uswds-blue" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-uswds-gray-90">{tool.name}</h3>
-                      <p className="text-sm text-uswds-gray-70">Generate professional documents</p>
+                      <h3 className="font-bold text-uswds-gray-90 text-sm">{tool.name}</h3>
+                      <p className="text-xs text-uswds-gray-70">{tool.description}</p>
                     </div>
                   </Link>
                 );
               })}
-              
-              {/* Coming Soon Tools */}
-              <div className="bg-white p-6 rounded border-2 border-uswds-gray-20 opacity-60">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 rounded bg-uswds-gray-5 flex items-center justify-center mr-4">
-                    <FileText className="h-6 w-6 text-uswds-gray-50" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-uswds-gray-70">More Tools Coming Soon</h3>
-                    <p className="text-sm text-uswds-gray-50">FAR Compliance, Contract Review, & More</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 

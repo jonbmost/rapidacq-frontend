@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Shield, Zap, TrendingUp, CheckCircle } from 'lucide-react';
+import { ArrowRight, Shield, FileText, TrendingUp, CheckCircle, Users, Target, FileCheck, Presentation, Search, Book } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -39,8 +39,8 @@ export default function Home() {
             <span className="text-uswds-blue">with AI-Powered Intelligence</span>
           </h1>
           <p className="text-xl text-uswds-gray-70 mb-8 max-w-3xl mx-auto">
-            Streamline your acquisition process with intelligent tools for SOWs, market research, 
-            strategy development, and compliance. Built for federal acquisition professionals.
+            Streamline your acquisition process with intelligent tools for strategy, requirements, 
+            market analysis, and compliance. Built for federal acquisition professionals.
           </p>
           <div className="flex justify-center space-x-4">
             <Link 
@@ -50,10 +50,10 @@ export default function Home() {
               Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link 
-              href="#demo"
+              href="#features"
               className="border-2 border-uswds-blue text-uswds-blue px-8 py-3 rounded text-lg font-bold hover:bg-uswds-blue-5 transition"
             >
-              Watch Demo
+              View Services
             </Link>
           </div>
         </div>
@@ -64,77 +64,121 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-uswds-gray-90 mb-4 font-serif">
-              Everything You Need for Modern Acquisition
+              Complete Suite of Acquisition Services
             </h2>
             <p className="text-xl text-uswds-gray-70">
-              Nine powerful AI tools designed for federal acquisition professionals
+              Ten powerful AI tools designed for federal acquisition professionals
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Service 1 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
               <div className="bg-uswds-blue-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <Zap className="h-6 w-6 text-uswds-blue" />
+                <Target className="h-6 w-6 text-uswds-blue" />
               </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">SOW Generator</h3>
-              <p className="text-uswds-gray-70">
-                Create professional, compliant Statements of Objectives in minutes with AI assistance.
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Acquisition Strategy</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Develop comprehensive acquisition strategies with AI-guided recommendations for approach and timeline.
               </p>
             </div>
 
-            {/* Feature 2 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+            {/* Service 2 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
               <div className="bg-uswds-green-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <TrendingUp className="h-6 w-6 text-uswds-green" />
+                <FileText className="h-6 w-6 text-uswds-green" />
               </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">Market Research</h3>
-              <p className="text-uswds-gray-70">
-                Conduct comprehensive market research with vendor landscape and competitive analysis.
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Requirement Documents</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Generate SOWs, PWS, and performance requirements with FAR-compliant language and structure.
               </p>
             </div>
 
-            {/* Feature 3 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
-              <div className="bg-uswds-red-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-uswds-red-warm" />
-              </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">FAR Compliance</h3>
-              <p className="text-uswds-gray-70">
-                Ensure compliance with automated FAR checks and specific citation recommendations.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+            {/* Service 3 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
               <div className="bg-uswds-gold-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <CheckCircle className="h-6 w-6 text-uswds-gold" />
+                <TrendingUp className="h-6 w-6 text-uswds-gold" />
               </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">Strategy Advisor</h3>
-              <p className="text-uswds-gray-70">
-                Get expert recommendations on OTA, CSO, SBIR Phase III, or traditional FAR approaches.
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Market Analysis</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Conduct thorough market research with vendor landscape analysis and capability assessments.
               </p>
             </div>
 
-            {/* Feature 5 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+            {/* Service 4 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+              <div className="bg-uswds-red-5 w-12 h-12 rounded flex items-center justify-center mb-4">
+                <CheckCircle className="h-6 w-6 text-uswds-red-warm" />
+              </div>
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Evaluation Criteria</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Create objective, defensible evaluation criteria and scoring methodologies for source selection.
+              </p>
+            </div>
+
+            {/* Service 5 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
               <div className="bg-uswds-blue-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-uswds-blue" />
+                <FileCheck className="h-6 w-6 text-uswds-blue" />
               </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">Contract Review</h3>
-              <p className="text-uswds-gray-70">
-                Identify risks and get improvement recommendations for contracts and clauses.
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">SOP Creation</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Develop standardized operating procedures for repeatable acquisition processes and workflows.
               </p>
             </div>
 
-            {/* Feature 6 */}
-            <div className="bg-white p-8 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+            {/* Service 6 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
               <div className="bg-uswds-green-5 w-12 h-12 rounded flex items-center justify-center mb-4">
-                <Zap className="h-6 w-6 text-uswds-green" />
+                <Users className="h-6 w-6 text-uswds-green" />
               </div>
-              <h3 className="text-xl font-bold text-uswds-gray-90 mb-2">AI Assistant</h3>
-              <p className="text-uswds-gray-70">
-                Get instant answers from our AI-powered acquisition expert trained on FAR and federal best practices.
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Stakeholder Mapping</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Identify and analyze key stakeholders, roles, and communication strategies for your acquisition.
+              </p>
+            </div>
+
+            {/* Service 7 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+              <div className="bg-uswds-gold-5 w-12 h-12 rounded flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-uswds-gold" />
+              </div>
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Authority Needs Assessment</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Determine optimal acquisition authority: FAR, OTA, CSO, or SBIR Phase III for your requirement.
+              </p>
+            </div>
+
+            {/* Service 8 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+              <div className="bg-uswds-red-5 w-12 h-12 rounded flex items-center justify-center mb-4">
+                <Presentation className="h-6 w-6 text-uswds-red-warm" />
+              </div>
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Slide Ranger</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Generate professional acquisition briefings and presentations for leadership and stakeholders.
+              </p>
+            </div>
+
+            {/* Service 9 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+              <div className="bg-uswds-blue-5 w-12 h-12 rounded flex items-center justify-center mb-4">
+                <Search className="h-6 w-6 text-uswds-blue" />
+              </div>
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Document Analysis</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Review and analyze contracts, proposals, and acquisition documents for compliance and risk.
+              </p>
+            </div>
+
+            {/* Service 10 */}
+            <div className="bg-white p-6 rounded border-2 border-uswds-gray-30 hover:border-uswds-blue transition">
+              <div className="bg-uswds-green-5 w-12 h-12 rounded flex items-center justify-center mb-4">
+                <Book className="h-6 w-6 text-uswds-green" />
+              </div>
+              <h3 className="text-lg font-bold text-uswds-gray-90 mb-2">Regs & Policy</h3>
+              <p className="text-sm text-uswds-gray-70">
+                Quick reference and guidance on FAR, DFARS, agency supplements, and acquisition policy.
               </p>
             </div>
           </div>
