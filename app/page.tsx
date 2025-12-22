@@ -46,18 +46,16 @@ export default function Home() {
                     <span className="text-uswds-red hidden md:inline">API Offline</span>
                   </>
                 )}
-              </div>
-
-              <Link href="/login" className="text-uswds-gray-70 hover:text-uswds-blue-70">
-                Sign In
-              </Link>
-              <Link 
-                href="/onboarding" 
-                className="bg-uswds-blue text-white px-4 py-2 rounded hover:bg-uswds-blue-70 font-medium"
-              >
-                Get Started
-              </Link>
-            </div>
+         <div className="flex items-center space-x-4">
+  <Link href="/login" className="text-gray-700 hover:text-primary-600">Sign In</Link>
+  <Link href="/admin/login" className="text-gray-700 hover:text-primary-600">Admin</Link>
+  <Link 
+    href="/onboarding" 
+    className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+  >
+    Get Started
+  </Link>
+</div>
           </div>
         </div>
       </nav>
@@ -179,3 +177,10 @@ export default function Home() {
     </div>
   );
 }
+
+<div>
+  <h4 className="text-white font-semibold mb-4">Admin</h4>
+  <ul className="space-y-2 text-sm">
+    <li><Link href="/admin/login" className="hover:text-white">Admin Login</Link></li>
+  </ul>
+</div>
