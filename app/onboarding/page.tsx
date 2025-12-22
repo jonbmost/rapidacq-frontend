@@ -124,9 +124,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-uswds-gray-5">
-      {/* USWDS Banner */}
-      </div>
-
+    
       {/* Header */}
       <div className="bg-uswds-blue text-white py-12">
         <div className="max-w-4xl mx-auto px-4">
