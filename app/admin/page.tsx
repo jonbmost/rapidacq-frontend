@@ -1,224 +1,266 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Shield, Users, CheckCircle, XCircle, Clock, LogOut } from 'lucide-react';
 
-interface Organization {
-  id: string;
-  organizationName: string;
-  contactName: string;
-  email: string;
-  phone?: string;
-  organizationType: string;
-  status: 'pending' | 'active' | 'inactive';
-  createdAt: string;
-  currentChallenges?: string[];
-  acquisitionVolume?: string;
-  teamSize?: string;
-  painPoints?: string;
-  desiredOutcomes?: string;
-}
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
 export default function AdminPage() {
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const router = useRouter();
+  const [organizations, setOrganizations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Get backend URL from environment variable
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
+  const [error, setError] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
 
   useEffect(() => {
+    // Check if admin is logged in
+    const isAdmin = localStorage.getItem('isAdmin');
+    const storedAdminEmail = localStorage.getItem('adminEmail');
+    
+    if (!isAdmin || isAdmin !== 'true') {
+      router.push('/admin/login');
+      return;
+    }
+
+    setAdminEmail(storedAdminEmail || 'Admin');
     fetchOrganizations();
-  }, []);
+  }, [router]);
 
   const fetchOrganizations = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      
-      console.log('Fetching from:', `${BACKEND_URL}/api/organizations`);
-      
       const response = await fetch(`${BACKEND_URL}/api/organizations`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Important: use 'cors' mode explicitly
         mode: 'cors',
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const data = await response.json();
-      console.log('Received data:', data);
-      
-      if (data.success && Array.isArray(data.organizations)) {
-        setOrganizations(data.organizations);
+
+      if (data.success) {
+        setOrganizations(data.organizations || []);
       } else {
-        throw new Error('Invalid response format');
+        setError('Failed to load organizations');
       }
     } catch (err) {
       console.error('Error fetching organizations:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch organizations');
+      setError('Failed to connect to server');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleApprove = async (id: string) => {
+  const handleApprove = async (orgId: string) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/organizations/${id}/approve`, {
+      const response = await fetch(`${BACKEND_URL}/api/organizations/${orgId}/approve`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         mode: 'cors',
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh the list
         fetchOrganizations();
+      } else {
+        alert('Failed to approve organization');
       }
     } catch (err) {
       console.error('Error approving organization:', err);
+      alert('Failed to approve organization');
     }
   };
 
-  const stats = {
-    total: organizations.length,
-    pending: organizations.filter(org => org.status === 'pending').length,
-    active: organizations.filter(org => org.status === 'active').length,
+  const handleReject = async (orgId: string) => {
+    if (!confirm('Are you sure you want to reject this organization?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/organizations/${orgId}/reject`, {
+        method: 'POST',
+        mode: 'cors',
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh the list
+        fetchOrganizations();
+      } else {
+        alert('Failed to reject organization');
+      }
+    } catch (err) {
+      console.error('Error rejecting organization:', err);
+      alert('Failed to reject organization');
+    }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminId');
+    localStorage.removeItem('adminToken');
+    router.push('/admin/login');
+  };
+
+  const pendingOrgs = organizations.filter(org => org.status === 'pending');
+  const activeOrgs = organizations.filter(org => org.status === 'active');
+  const rejectedOrgs = organizations.filter(org => org.status === 'inactive');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-uswds-gray-5 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-uswds-blue mx-auto mb-4"></div>
+          <p className="text-uswds-gray-70">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-uswds-gray-5">
       {/* Header */}
-      <div className="bg-uswds-gray-90 text-white py-6">
+      <div className="bg-uswds-blue text-white py-6">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-uswds-gray-30">Manage organization onboarding</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center mb-2">
+                <Shield className="h-8 w-8 mr-3" />
+                <h1 className="text-3xl font-bold font-serif">Admin Dashboard</h1>
+              </div>
+              <p className="text-uswds-blue-20">Logged in as: {adminEmail}</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+      {/* Stats */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded border border-uswds-gray-30">
-            <div className="text-3xl font-bold text-uswds-blue mb-2">{stats.total}</div>
-            <div className="text-uswds-gray-70">Total Organizations</div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-uswds-gray-70">Total Organizations</p>
+                <p className="text-3xl font-bold text-uswds-gray-90">{organizations.length}</p>
+              </div>
+              <Users className="h-8 w-8 text-uswds-gray-50" />
+            </div>
           </div>
+
           <div className="bg-white p-6 rounded border border-uswds-gray-30">
-            <div className="text-3xl font-bold text-uswds-gold mb-2">{stats.pending}</div>
-            <div className="text-uswds-gray-70">Pending Approval</div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-uswds-gray-70">Pending Approval</p>
+                <p className="text-3xl font-bold text-uswds-gold">{pendingOrgs.length}</p>
+              </div>
+              <Clock className="h-8 w-8 text-uswds-gold" />
+            </div>
           </div>
+
           <div className="bg-white p-6 rounded border border-uswds-gray-30">
-            <div className="text-3xl font-bold text-uswds-green mb-2">{stats.active}</div>
-            <div className="text-uswds-gray-70">Active</div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-uswds-gray-70">Active</p>
+                <p className="text-3xl font-bold text-uswds-green">{activeOrgs.length}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-uswds-green" />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded border border-uswds-gray-30">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-uswds-gray-70">Rejected</p>
+                <p className="text-3xl font-bold text-uswds-red-warm">{rejectedOrgs.length}</p>
+              </div>
+              <XCircle className="h-8 w-8 text-uswds-red-warm" />
+            </div>
           </div>
         </div>
 
-        {/* Error Display */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
-            <strong>Error:</strong> {error}
-            <div className="text-sm mt-2">
-              <p>Backend URL: {BACKEND_URL}</p>
-              <button 
-                onClick={fetchOrganizations}
-                className="mt-2 text-blue-600 hover:text-blue-800 underline"
-              >
-                Retry
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Organizations Table */}
+        {/* Organizations List */}
         <div className="bg-white rounded border border-uswds-gray-30">
-          <div className="border-b border-uswds-gray-30 p-6">
+          <div className="p-6 border-b border-uswds-gray-30">
             <h2 className="text-2xl font-bold text-uswds-gray-90">Organizations</h2>
           </div>
-          
-          {loading ? (
-            <div className="p-12 text-center text-uswds-gray-70">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-uswds-blue"></div>
-              <p className="mt-4">Loading organizations...</p>
+
+          {error && (
+            <div className="p-4 bg-red-50 border-b border-red-200 text-red-700">
+              {error}
             </div>
-          ) : organizations.length === 0 ? (
-            <div className="p-12 text-center text-uswds-gray-70">
-              <p className="text-lg">No organizations found</p>
-              <p className="text-sm mt-2">Organizations will appear here once they complete onboarding</p>
-              <button 
-                onClick={fetchOrganizations}
-                className="mt-4 px-4 py-2 bg-uswds-blue text-white rounded hover:bg-blue-700"
-              >
-                Refresh
-              </button>
+          )}
+
+          {organizations.length === 0 ? (
+            <div className="p-8 text-center text-uswds-gray-70">
+              <Users className="h-12 w-12 mx-auto mb-4 text-uswds-gray-30" />
+              <p>No organizations found</p>
+              <p className="text-sm">Organizations will appear here once they complete onboarding</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-uswds-gray-5">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Organization
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Created
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-uswds-gray-70 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-uswds-gray-30">
-                  {organizations.map((org) => (
-                    <tr key={org.id} className="hover:bg-uswds-gray-5">
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-uswds-gray-90">{org.organizationName}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-uswds-gray-90">{org.contactName}</div>
-                        <div className="text-sm text-uswds-gray-70">{org.email}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-uswds-gray-90 capitalize">{org.organizationType}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${org.status === 'active' ? 'bg-green-100 text-green-800' : 
-                            org.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                            'bg-gray-100 text-gray-800'}`}>
-                          {org.status}
+            <div className="divide-y divide-uswds-gray-30">
+              {organizations.map((org) => (
+                <div key={org.id} className="p-6 hover:bg-uswds-gray-5">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-bold text-uswds-gray-90">
+                          {org.organizationName}
+                        </h3>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            org.status === 'pending'
+                              ? 'bg-uswds-gold-5 text-uswds-gold'
+                              : org.status === 'active'
+                              ? 'bg-uswds-green-5 text-uswds-green'
+                              : 'bg-red-50 text-uswds-red-warm'
+                          }`}
+                        >
+                          {org.status.toUpperCase()}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-uswds-gray-70">
-                        {new Date(org.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        {org.status === 'pending' && (
-                          <button
-                            onClick={() => handleApprove(org.id)}
-                            className="px-3 py-1 bg-uswds-green text-white rounded hover:bg-green-700"
-                          >
-                            Approve
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4 text-sm text-uswds-gray-70">
+                        <div>
+                          <p><strong>Contact:</strong> {org.contactName}</p>
+                          <p><strong>Email:</strong> {org.email}</p>
+                          <p><strong>Type:</strong> {org.organizationType}</p>
+                        </div>
+                        <div>
+                          <p><strong>Team Size:</strong> {org.teamSize || 'N/A'}</p>
+                          <p><strong>Annual Volume:</strong> {org.annualVolume || 'N/A'}</p>
+                          <p><strong>Created:</strong> {new Date(org.createdAt).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {org.status === 'pending' && (
+                      <div className="flex gap-2 ml-4">
+                        <button
+                          onClick={() => handleApprove(org.id)}
+                          className="bg-uswds-green text-white px-4 py-2 rounded font-semibold hover:bg-uswds-green-70 flex items-center"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleReject(org.id)}
+                          className="bg-uswds-red-warm text-white px-4 py-2 rounded font-semibold hover:opacity-80 flex items-center"
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
