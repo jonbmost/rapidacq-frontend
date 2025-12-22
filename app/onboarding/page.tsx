@@ -139,8 +139,8 @@ export default function OnboardingPage() {
               <span className="ml-2 font-medium">Organization</span>
             </div>
             <div className="flex-1 h-1 mx-4 bg-uswds-gray-30">
-              <div className={`h-full ${step >= 2 ? 'bg-uswds-blue' : 'bg-uswds-gray-30'}`} style={{ width: step >= 2 ? '100%' : '0%' }}></div>
-            </div>
+<div className={`h-full ${step >= 2 ? 'bg-uswds-blue' : 'bg-uswds-gray-30'}`} style={{ width: step >= 2 ? '100%' : '0%' }}></div>            
+</div>
             <div className={`flex items-center ${step >= 2 ? 'text-uswds-blue' : 'text-uswds-gray-50'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-uswds-blue text-white' : 'bg-uswds-gray-30 text-white'}`}>
                 2
