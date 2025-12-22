@@ -55,7 +55,7 @@ export default function Home() {
                 )}
               </div>
 
-              <Link href="/dashboard" className="text-uswds-gray-70 hover:text-uswds-blue-70">
+              <Link href="/login" className="text-uswds-gray-70 hover:text-uswds-blue-70">
                 Sign In
               </Link>
               <Link 
@@ -97,7 +97,7 @@ export default function Home() {
               Get Started <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link 
-              href="/dashboard" 
+              href="/login" 
               className="inline-flex items-center justify-center border-2 border-uswds-blue text-uswds-blue px-8 py-3 rounded text-lg font-semibold hover:bg-uswds-blue-5"
             >
               Sign In
@@ -167,7 +167,7 @@ export default function Home() {
               <h4 className="font-bold mb-4">Get Started</h4>
               <ul className="space-y-2 text-uswds-gray-30 text-sm">
                 <li><Link href="/onboarding" className="hover:text-white">Create Account</Link></li>
-                <li><Link href="/dashboard" className="hover:text-white">Sign In</Link></li>
+                <li><Link href="/login" className="hover:text-white">Sign In</Link></li>
               </ul>
             </div>
             <div>
