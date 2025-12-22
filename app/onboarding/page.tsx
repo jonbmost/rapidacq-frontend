@@ -124,7 +124,8 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-uswds-gray-5">
-    
+        </div>
+
       {/* Header */}
       <div className="bg-uswds-blue text-white py-12">
         <div className="max-w-4xl mx-auto px-4">
@@ -136,11 +137,18 @@ export default function OnboardingPage() {
       </div>
 
       {/* Progress Bar */}
+      <div className="bg-white border-b border-uswds-gray-30">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className={`flex items-center ${step >= 1 ? 'text-uswds-blue' : 'text-uswds-gray-50'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-uswds-blue text-white' : 'bg-uswds-gray-30 text-white'}`}>
+                1
+              </div>
               <span className="ml-2 font-medium">Organization</span>
             </div>
             <div className="flex-1 h-1 mx-4 bg-uswds-gray-30">
-<div className={`h-full ${step >= 2 ? 'bg-uswds-blue' : 'bg-uswds-gray-30'}`} style={{ width: step >= 2 ? '100%' : '0%' }}></div>            
-</div>
+              <div className={`h-full ${step >= 2 ? 'bg-uswds-blue' : 'bg-uswds-gray-30'}`} style={{ width: step >= 2 ? '100%' : '0%' }}></div>
+            </div>
             <div className={`flex items-center ${step >= 2 ? 'text-uswds-blue' : 'text-uswds-gray-50'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-uswds-blue text-white' : 'bg-uswds-gray-30 text-white'}`}>
                 2
