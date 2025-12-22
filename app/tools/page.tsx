@@ -85,7 +85,7 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-uswds-gray-5">
       {/* USWDS Banner */}
-      </div>
+  
 
       {/* Header */}
       <div className="bg-uswds-blue text-white py-16">
