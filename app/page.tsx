@@ -18,14 +18,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* USWDS-style Banner */}
-      <div className="bg-uswds-gray-5 border-b border-uswds-gray-30">
-        <div className="max-w-7xl mx-auto px-4 py-1">
-          <div className="flex items-center text-xs text-uswds-gray-70">
-            An official website of the United States government
-          </div>
-        </div>
-      </div>
+      
 
       {/* Navigation */}
       <nav className="border-b-4 border-uswds-blue bg-white">
