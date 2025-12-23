@@ -74,11 +74,11 @@ export default function AuthorityAssessmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-uswds-gray-5">
+    <div className="min-h-screen bg-[#0f172a]">
       {/* Header */}
-      <div className="bg-uswds-gold text-white py-8">
+      <div className="bg-[#1e293b] text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-white/80 hover:text-white mb-4 inline-flex items-center">
+          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
@@ -86,7 +86,7 @@ export default function AuthorityAssessmentPage() {
             <Shield className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">Authority Needs Assessment</h1>
-              <p className="text-gold-100">Determine optimal acquisition authority</p>
+              <p className="text-slate-400">Determine optimal acquisition authority</p>
             </div>
           </div>
         </div>
@@ -97,42 +97,42 @@ export default function AuthorityAssessmentPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Sidebar - Guide */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">Authority Options</h3>
-              <ul className="space-y-3 text-sm text-uswds-gray-70">
+            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
+              <h3 className="font-bold text-white mb-4">Authority Options</h3>
+              <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>FAR Part 12 (Commercial)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>FAR Part 15 (Negotiated)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>Other Transaction Authority (OTA)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>Commercial Solutions Opening (CSO)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>SBIR/STTR Phase III</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>Simplified Acquisition Procedures</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-blue-500 mr-2">•</span>
                   <span>Authority comparison matrix</span>
                 </li>
               </ul>
               
               <button
                 onClick={exportConversation}
-                className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
+                className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Export Assessment
@@ -142,7 +142,7 @@ export default function AuthorityAssessmentPage() {
 
           {/* Right Content - Chat Interface */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded border border-uswds-gray-30 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
+            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
@@ -153,8 +153,8 @@ export default function AuthorityAssessmentPage() {
                     <div
                       className={`max-w-[80%] rounded-lg p-4 ${
                         message.role === 'user'
-                          ? 'bg-uswds-gold text-white'
-                          : 'bg-uswds-gray-5 text-uswds-gray-90'
+                          ? 'bg-[#1e293b] text-white'
+                          : 'bg-[#0f172a] text-white'
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -164,28 +164,28 @@ export default function AuthorityAssessmentPage() {
                 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-uswds-gray-5 rounded-lg p-4">
-                      <Loader2 className="h-5 w-5 animate-spin text-uswds-gold" />
+                    <div className="bg-[#0f172a] rounded-lg p-4">
+                      <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-uswds-gray-30">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
                 <div className="flex space-x-2">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Describe what you need to acquire..."
-                    className="flex-1 px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-gold"
+                    className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-slate-700"
                     disabled={loading}
                   />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    className="bg-uswds-gold text-white px-6 py-2 rounded font-semibold hover:bg-uswds-gold-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
+                    className="bg-[#1e293b] text-white px-6 py-2 rounded font-semibold hover:bg-[#1e293b]-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
                   >
                     <Send className="h-4 w-4" />
                   </button>

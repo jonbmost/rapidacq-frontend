@@ -74,10 +74,10 @@ export default function MarketAnalysisPage() {
   };
 
   return (
-    <div className="min-h-screen bg-uswds-gray-5">
-      <div className="bg-uswds-gold text-white py-8">
+    <div className="min-h-screen bg-[#0f172a]">
+      <div className="bg-[#1e293b] text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-white/80 hover:text-white mb-4 inline-flex items-center">
+          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Link>
@@ -85,7 +85,7 @@ export default function MarketAnalysisPage() {
             <TrendingUp className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">Market Analysis</h1>
-              <p className="text-gold-100">Conduct market research with vendor landscape analysis</p>
+              <p className="text-slate-400">Conduct market research with vendor landscape analysis</p>
             </div>
           </div>
         </div>
@@ -94,40 +94,40 @@ export default function MarketAnalysisPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">Analysis Components</h3>
-              <ul className="space-y-3 text-sm text-uswds-gray-70">
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Market landscape overview</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Vendor capability assessment</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Competitive analysis</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Small business availability</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Industry standards and trends</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Price reasonableness data</span></li>
-                <li className="flex items-start"><span className="text-uswds-gold mr-2">•</span><span>Sources sought recommendations</span></li>
+            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
+              <h3 className="font-bold text-white mb-4">Analysis Components</h3>
+              <ul className="space-y-3 text-sm text-slate-400">
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Market landscape overview</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Vendor capability assessment</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Competitive analysis</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Small business availability</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Industry standards and trends</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Price reasonableness data</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2">•</span><span>Sources sought recommendations</span></li>
               </ul>
-              <button onClick={exportConversation} className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center">
+              <button onClick={exportConversation} className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center">
                 <Download className="h-4 w-4 mr-2" />Export Analysis
               </button>
             </div>
           </div>
 
           <div className="lg:col-span-2">
-            <div className="bg-white rounded border border-uswds-gray-30 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
+            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-lg p-4 ${message.role === 'user' ? 'bg-uswds-gold text-white' : 'bg-uswds-gray-5 text-uswds-gray-90'}`}>
+                    <div className={`max-w-[80%] rounded-lg p-4 ${message.role === 'user' ? 'bg-[#1e293b] text-white' : 'bg-[#0f172a] text-white'}`}>
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                     </div>
                   </div>
                 ))}
-                {loading && <div className="flex justify-start"><div className="bg-uswds-gray-5 rounded-lg p-4"><Loader2 className="h-5 w-5 animate-spin text-uswds-gold" /></div></div>}
+                {loading && <div className="flex justify-start"><div className="bg-[#0f172a] rounded-lg p-4"><Loader2 className="h-5 w-5 animate-spin text-blue-500" /></div></div>}
               </div>
 
-              <form onSubmit={handleSubmit} className="p-4 border-t border-uswds-gray-30">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
                 <div className="flex space-x-2">
-                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="What market do you need to research?" className="flex-1 px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-gold" disabled={loading} />
-                  <button type="submit" disabled={loading || !input.trim()} className="bg-uswds-gold text-white px-6 py-2 rounded font-semibold hover:bg-uswds-gold-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center">
+                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="What market do you need to research?" className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-slate-700" disabled={loading} />
+                  <button type="submit" disabled={loading || !input.trim()} className="bg-[#1e293b] text-white px-6 py-2 rounded font-semibold hover:bg-[#1e293b]-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center">
                     <Send className="h-4 w-4" />
                   </button>
                 </div>
