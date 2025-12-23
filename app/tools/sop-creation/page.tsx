@@ -86,7 +86,7 @@ export default function SOPCreationPage() {
             <FileCheck className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">SOP Creation</h1>
-              <p className="text-blue-20">Develop standard operating procedures for acquisitions</p>
+              <p className="text-blue-100">Develop standard operating procedures for acquisitions</p>
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function SOPCreationPage() {
                       <Loader2 className="h-5 w-5 animate-spin text-uswds-blue" />
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Input */}

@@ -86,7 +86,7 @@ export default function AuthorityAssessmentPage() {
             <Shield className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">Authority Needs Assessment</h1>
-              <p className="text-gold-20">Determine optimal acquisition authority</p>
+              <p className="text-gold-100">Determine optimal acquisition authority</p>
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function AuthorityAssessmentPage() {
                       <Loader2 className="h-5 w-5 animate-spin text-uswds-gold" />
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Input */}
