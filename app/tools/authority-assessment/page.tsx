@@ -12,7 +12,7 @@ interface Message {
   content: string;
 }
 
-export default function AuthorityNeedsAssessmentPage() {
+export default function AuthorityAssessmentPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -86,7 +86,7 @@ export default function AuthorityNeedsAssessmentPage() {
             <Shield className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">Authority Needs Assessment</h1>
-              <p className="text-uswds-gold-80">Determine optimal acquisition authority</p>
+              <p className="text-gold-20">Determine optimal acquisition authority</p>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function AuthorityNeedsAssessmentPage() {
           {/* Left Sidebar - Guide */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">Key Components</h3>
+              <h3 className="font-bold text-uswds-gray-90 mb-4">Authority Options</h3>
               <ul className="space-y-3 text-sm text-uswds-gray-70">
                 <li className="flex items-start">
                   <span className="text-uswds-gold mr-2">•</span>
@@ -135,7 +135,7 @@ export default function AuthorityNeedsAssessmentPage() {
                 className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
               >
                 <Download className="h-4 w-4 mr-2" />
-                Export Document
+                Export Assessment
               </button>
             </div>
           </div>
