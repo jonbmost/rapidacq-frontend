@@ -12,7 +12,7 @@ interface Message {
   content: string;
 }
 
-export default function RegsAndPolicyPage() {
+export default function RegsPolicyPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -86,7 +86,7 @@ export default function RegsAndPolicyPage() {
             <Book className="h-10 w-10 mr-4" />
             <div>
               <h1 className="text-3xl font-bold font-serif">Regs & Policy</h1>
-              <p className="text-uswds-green-20">FAR and policy quick reference</p>
+              <p className="text-green-100">FAR and policy quick reference</p>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function RegsAndPolicyPage() {
           {/* Left Sidebar - Guide */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">Key Components</h3>
+              <h3 className="font-bold text-uswds-gray-90 mb-4">Key Resources</h3>
               <ul className="space-y-3 text-sm text-uswds-gray-70">
                 <li className="flex items-start">
                   <span className="text-uswds-green mr-2">•</span>
@@ -135,7 +135,7 @@ export default function RegsAndPolicyPage() {
                 className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
               >
                 <Download className="h-4 w-4 mr-2" />
-                Export Document
+                Export Reference
               </button>
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function RegsAndPolicyPage() {
                       <Loader2 className="h-5 w-5 animate-spin text-uswds-green" />
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Input */}
