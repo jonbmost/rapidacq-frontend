@@ -9,6 +9,32 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// General chat endpoint (proxies to SOW Generator for now)
+const fetch = require('node-fetch');
+app.post('/api/chat', async (req, res) => {
+  try {
+    // Proxy to SOW Generator tool endpoint
+    const response = await fetch(`${req.protocol}://${req.get('host')}/api/tools/sow-generator`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.body),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      return res.status(response.status).json({ error: error.error || 'API error' });
+    }
+
+    const data = await response.json();
+    // Return in frontend-expected format
+    return res.status(200).json({ response: data.sow || data.response || 'No response.' });
+  } catch (error) {
+    console.error('General chat error:', error);
+    return res.status(500).json({ error: 'Internal server error', message: error.message });
+  }
+});
 // Health check (public)
 app.get('/', (req, res) => {
   res.json({ 
