@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Zap, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book, Target } from 'lucide-react';
+import { ArrowRight, Wrench, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book, Target } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -10,9 +10,9 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Zap className="h-6 w-6 text-white" />
+                <Wrench className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-bold text-white">RapidAcq</span>
+              <span className="text-2xl font-bold text-white">AIT</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <Link href="#features" className="text-slate-300 hover:text-white transition">Features</Link>
@@ -43,7 +43,7 @@ export default function Home() {
           <div className="text-center">
             <div className="inline-flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-700 mb-8">
               <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-              <span className="text-sm text-slate-300">Acquisition Innovation Toolkit</span>
+              <span className="text-sm text-slate-300">Agile Innovation Toolkit</span>
             </div>
             
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
@@ -54,7 +54,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              The Acquisition Innovation Toolkit (AIT) empowers organizations to rapidly develop 
+              The Agile Innovation Toolkit (AIT) empowers organizations to rapidly develop 
               comprehensive solutions including business process redesign, acquisition strategy 
               development, requirement documents, and more.
             </p>
@@ -67,13 +67,9 @@ export default function Home() {
                 Start Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <div className="flex items-center space-x-2 text-slate-400">
-                <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 border-2 border-slate-900"></div>
-                  <div className="w-8 h-8 rounded-full bg-purple-600 border-2 border-slate-900"></div>
-                  <div className="w-8 h-8 rounded-full bg-green-600 border-2 border-slate-900"></div>
-                </div>
-                <span className="text-sm">Trusted by 10k+ users</span>
+              <div className="flex items-center space-x-3 text-slate-400">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-sm font-medium">Built on 20+ Years of Proven Solutions</span>
               </div>
             </div>
           </div>
@@ -97,7 +93,7 @@ export default function Home() {
             {[
               { 
                 name: 'Acquisition Strategy Development', 
-                icon: Zap, 
+                icon: Target, 
                 desc: 'Develop comprehensive acquisition strategies with expert guidance and data-driven insights for rapid solution development.'
               },
               { 
@@ -190,8 +186,8 @@ export default function Home() {
             </div>
 
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-8 hover:border-blue-500/50 transition">
-              <div className="w-14 h-14 bg-purple-600/10 rounded-xl flex items-center justify-center mb-6">
-                <Zap className="h-7 w-7 text-purple-500" />
+              <div className="w-14 h-14 bg-blue-600/10 rounded-xl flex items-center justify-center mb-6">
+                <Wrench className="h-7 w-7 text-blue-500" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">Digital Interactive Playbooks</h3>
               <p className="text-slate-400 leading-relaxed mb-6">
@@ -210,7 +206,7 @@ export default function Home() {
             Ready to Transform Your Acquisition Process?
           </h2>
           <p className="text-xl text-slate-400 mb-8">
-            Join federal acquisition professionals using RapidAcq to accelerate solutions and improve outcomes.
+            Join federal acquisition professionals using AIT to accelerate solutions and improve outcomes.
           </p>
           <Link 
             href="/onboarding"
@@ -229,9 +225,9 @@ export default function Home() {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-white" />
+                  <Wrench className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-white">RapidAcq</span>
+                <span className="text-xl font-bold text-white">AIT</span>
               </div>
               <p className="text-slate-400 text-sm">
                 AI-powered federal acquisition platform
@@ -261,7 +257,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-slate-700 pt-8 text-center text-sm text-slate-400">
-            © 2025 RapidAcq. All rights reserved.
+            © 2025 AIT. All rights reserved.
           </div>
         </div>
       </footer>

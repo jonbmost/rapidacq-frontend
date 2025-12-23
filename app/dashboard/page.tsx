@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Zap, MessageSquare, Target, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book } from 'lucide-react';
+import { LogOut, Wrench, MessageSquare, Target, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book } from 'lucide-react';
 import AcquisitionChatbot from '@/components/AcquisitionChatbot';
 
 export default function DashboardPage() {
@@ -61,9 +61,9 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Zap className="h-5 w-5 text-white" />
+                <Wrench className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">RapidAcq</span>
+              <span className="text-xl font-bold text-white">AIT</span>
             </div>
             <div className="flex items-center space-x-6">
               <div className="text-sm">
