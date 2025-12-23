@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Target, ArrowLeft, Send, Loader2, Download, Wrench } from 'lucide-react';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
+import api from '@/lib/api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -31,24 +30,20 @@ export default function AcquisitionStrategyPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `[Acquisition Strategy Context] ${userMessage}`,
-          history: messages
-        }),
+      const result = await api.callMcpTool('acquisition-strategy', {
+        message: userMessage,
+        history: messages
       });
 
-      if (!response.ok) throw new Error('Failed to get response');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get response');
+      }
 
-      const data = await response.json();
-      
+      const responseText = result.data?.response ?? result.data?.result ?? result.data?.message;
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.response
+        content: responseText || 'I apologize, but I encountered an error. Please try again.'
       }]);
     } catch (error) {
       console.error('Chat error:', error);

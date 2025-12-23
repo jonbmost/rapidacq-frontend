@@ -1,23 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FileCheck, ArrowLeft, Send, Loader2, Download } from 'lucide-react';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
+import { Presentation, ArrowLeft, Send, Loader2, Download } from 'lucide-react';
+import api from '@/lib/api';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-export default function SOPCreationPage() {
-  const router = useRouter();
+export default function SlideRangerPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the SOP Creation tool. I can help you develop standardized operating procedures for repeatable acquisition processes and workflows. What process needs an SOP?'
+      content: 'Welcome to Slide Ranger. I can help you generate presentation outlines and slide content for acquisition briefings. What presentation do you need to build?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -33,24 +30,20 @@ export default function SOPCreationPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: `[SOP Creation Context] ${userMessage}`,
-          history: messages
-        }),
+      const result = await api.callMcpTool('slide-ranger', {
+        message: userMessage,
+        history: messages
       });
 
-      if (!response.ok) throw new Error('Failed to get response');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get response');
+      }
 
-      const data = await response.json();
-      
+      const responseText = result.data?.response ?? result.data?.result ?? result.data?.message;
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.response
+        content: responseText || 'I apologize, but I encountered an error. Please try again.'
       }]);
     } catch (error) {
       console.error('Chat error:', error);
@@ -69,7 +62,7 @@ export default function SOPCreationPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'sop-document.txt';
+    a.download = 'slide-ranger-outline.txt';
     a.click();
   };
 
@@ -83,10 +76,10 @@ export default function SOPCreationPage() {
             Back to Dashboard
           </Link>
           <div className="flex items-center mt-4">
-            <FileCheck className="h-10 w-10 mr-4" />
+            <Presentation className="h-10 w-10 mr-4" />
             <div>
-              <h1 className="text-3xl font-bold font-serif">SOP Creation</h1>
-              <p className="text-blue-100">Develop standard operating procedures for acquisitions</p>
+              <h1 className="text-3xl font-bold font-serif">Slide Ranger</h1>
+              <p className="text-blue-100">Generate acquisition presentation content</p>
             </div>
           </div>
         </div>
@@ -98,35 +91,35 @@ export default function SOPCreationPage() {
           {/* Left Sidebar - Guide */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">SOP Components</h3>
+              <h3 className="font-bold text-uswds-gray-90 mb-4">Suggested Slides</h3>
               <ul className="space-y-3 text-sm text-uswds-gray-70">
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Process workflow steps</span>
+                  <span>Mission overview</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Roles and responsibilities</span>
+                  <span>Problem statement</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Required documentation</span>
+                  <span>Market insights</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Approval authorities</span>
+                  <span>Acquisition strategy</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Compliance checkpoints</span>
+                  <span>Milestones</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Quality control measures</span>
+                  <span>Risks and mitigations</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-uswds-blue mr-2">•</span>
-                  <span>Templates and tools</span>
+                  <span>Decision asks</span>
                 </li>
               </ul>
               
@@ -135,7 +128,7 @@ export default function SOPCreationPage() {
                 className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
               >
                 <Download className="h-4 w-4 mr-2" />
-                Export SOP
+                Export Outline
               </button>
             </div>
           </div>
@@ -178,7 +171,7 @@ export default function SOPCreationPage() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="What process needs standardization?"
+                    placeholder="Describe the presentation you need..."
                     className="flex-1 px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
                     disabled={loading}
                   />

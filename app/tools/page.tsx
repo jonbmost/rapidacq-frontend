@@ -3,71 +3,68 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FileText, Search, Lightbulb, FileCheck, Shield, Rocket, Code, Users, FileSignature, ArrowLeft } from 'lucide-react';
+import { Target, Shield, Search, CheckCircle, TrendingUp, Book, FileText, Presentation, FileCheck, Users, ArrowLeft } from 'lucide-react';
 
 const tools = [
   {
-    name: 'SOW Generator',
-    description: 'Create professional Statements of Objectives with agile guardrails',
-    icon: FileText,
-    href: '/tools/sow-generator',
-    color: 'uswds-blue'
+    name: 'Acquisition Strategy',
+    description: 'Develop comprehensive acquisition strategies',
+    icon: Target,
+    href: '/tools/acquisition-strategy'
   },
   {
-    name: 'Market Research',
-    description: 'Comprehensive vendor landscape and competitive analysis',
-    icon: Search,
-    href: '/tools/market-research',
-    color: 'uswds-green'
-  },
-  {
-    name: 'Strategy Advisor',
-    description: 'Evidence-based acquisition vehicle recommendations',
-    icon: Lightbulb,
-    href: '/tools/strategy-advisor',
-    color: 'uswds-gold'
-  },
-  {
-    name: 'Contract Review',
-    description: 'Risk identification and improvement recommendations',
-    icon: FileCheck,
-    href: '/tools/contract-review',
-    color: 'uswds-red-warm'
-  },
-  {
-    name: 'FAR Compliance',
-    description: 'Automated compliance checking with FAR citations',
+    name: 'Authority Assessment',
+    description: 'Determine optimal authority',
     icon: Shield,
-    href: '/tools/far-compliance',
-    color: 'uswds-blue-70'
+    href: '/tools/authority-assessment'
   },
   {
-    name: 'SBIR Transition',
-    description: 'Navigate SBIR Phase III transition pathways',
-    icon: Rocket,
-    href: '/tools/sbir-transition',
-    color: 'uswds-blue-50'
+    name: 'Document Analysis',
+    description: 'Review compliance',
+    icon: Search,
+    href: '/tools/document-analysis'
   },
   {
-    name: 'Agile Planner',
-    description: 'Design modular contracting and sprint strategies',
-    icon: Code,
-    href: '/tools/agile-planner',
-    color: 'uswds-green-cool'
+    name: 'Evaluation Criteria',
+    description: 'Create scoring methodologies',
+    icon: CheckCircle,
+    href: '/tools/evaluation-criteria'
   },
   {
-    name: 'PM/COR Coordinator',
-    description: 'Coordinate program management and oversight',
+    name: 'Market Analysis',
+    description: 'Conduct market research',
+    icon: TrendingUp,
+    href: '/tools/market-analysis'
+  },
+  {
+    name: 'Regs & Policy',
+    description: 'FAR quick reference',
+    icon: Book,
+    href: '/tools/regs-policy'
+  },
+  {
+    name: 'Requirement Documents',
+    description: 'Generate SOWs, PWS, and requirements',
+    icon: FileText,
+    href: '/tools/requirement-documents'
+  },
+  {
+    name: 'Slide Ranger',
+    description: 'Generate presentations',
+    icon: Presentation,
+    href: '/tools/slide-ranger'
+  },
+  {
+    name: 'SOP Creation',
+    description: 'Standardize processes',
+    icon: FileCheck,
+    href: '/tools/sop-creation'
+  },
+  {
+    name: 'Stakeholder Mapping',
+    description: 'Identify key stakeholders',
     icon: Users,
-    href: '/tools/pm-cor-coordinator',
-    color: 'uswds-gold'
-  },
-  {
-    name: 'RFP Generator',
-    description: 'Create professional solicitation documents',
-    icon: FileSignature,
-    href: '/tools/rfp-generator',
-    color: 'uswds-blue-60'
+    href: '/tools/stakeholder-mapping'
   }
 ];
 
@@ -83,26 +80,25 @@ export default function ToolsPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-uswds-gray-5">
-      {/* USWDS Banner */}
-  
-
-      {/* Header */}
-      <div className="bg-uswds-blue text-white py-16">
+    <div className="min-h-screen bg-[#0f172a]">
+      <header className="bg-[#1e293b] border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/dashboard" className="text-white/80 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <h1 className="text-4xl font-bold mb-2 font-serif">Acquisition Tools</h1>
-          <p className="text-xl text-uswds-blue-20">
-            AI-powered tools built on agile acquisition principles
-          </p>
+          <div className="flex flex-col gap-4 py-10">
+            <Link href="/dashboard" className="text-slate-400 hover:text-white inline-flex items-center">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-white">Your Services</h1>
+              <p className="text-slate-400 mt-2">
+                AI-powered tools built on agile acquisition principles
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Tools Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
             const Icon = tool.icon;
@@ -110,18 +106,24 @@ export default function ToolsPage() {
               <Link
                 key={tool.name}
                 href={tool.href}
-                className="bg-white p-6 rounded border-2 border-uswds-gray-10 hover:border-uswds-blue transition-all shadow-sm hover:shadow-md"
+                className="group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-blue-500/50 transition-all duration-300"
               >
-                <div className={`w-12 h-12 rounded bg-uswds-blue-10 flex items-center justify-center mb-4`}>
-                  <Icon className={`h-6 w-6 text-uswds-blue`} />
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-16 h-16 bg-blue-600/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600/20 transition">
+                    <Icon className="h-8 w-8 text-blue-500" />
+                  </div>
+                  <h3 className="font-bold text-white mb-2 group-hover:text-blue-400 transition">
+                    {tool.name}
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    {tool.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-uswds-gray-90 mb-2">{tool.name}</h3>
-                <p className="text-uswds-gray-70">{tool.description}</p>
               </Link>
             );
           })}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
