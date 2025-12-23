@@ -33,106 +33,46 @@ export default function DashboardPage() {
   };
 
   const services = [
-    { 
-      name: 'Acquisition Strategy', 
-      icon: Target, 
-      href: '/tools/acquisition-strategy', 
-      description: 'Develop comprehensive acquisition strategies',
-      category: 'Strategy'
-    },
-    { 
-      name: 'Requirement Documents', 
-      icon: FileText, 
-      href: '/tools/requirement-documents', 
-      description: 'Generate SOWs, PWS, and requirements',
-      category: 'Documentation'
-    },
-    { 
-      name: 'Market Analysis', 
-      icon: TrendingUp, 
-      href: '/tools/market-analysis', 
-      description: 'Conduct market research',
-      category: 'Research'
-    },
-    { 
-      name: 'Evaluation Criteria', 
-      icon: CheckCircle, 
-      href: '/tools/evaluation-criteria', 
-      description: 'Create scoring methodologies',
-      category: 'Evaluation'
-    },
-    { 
-      name: 'SOP Creation', 
-      icon: FileCheck, 
-      href: '/tools/sop-creation', 
-      description: 'Standardize processes',
-      category: 'Process'
-    },
-    { 
-      name: 'Stakeholder Mapping', 
-      icon: Users, 
-      href: '/tools/stakeholder-mapping', 
-      description: 'Identify key stakeholders',
-      category: 'Planning'
-    },
-    { 
-      name: 'Authority Assessment', 
-      icon: Shield, 
-      href: '/tools/authority-assessment', 
-      description: 'Determine optimal authority',
-      category: 'Strategy'
-    },
-    { 
-      name: 'Slide Ranger', 
-      icon: Presentation, 
-      href: '/tools/slide-ranger', 
-      description: 'Generate presentations',
-      category: 'Documentation'
-    },
-    { 
-      name: 'Document Analysis', 
-      icon: Search, 
-      href: '/tools/document-analysis', 
-      description: 'Review compliance',
-      category: 'Analysis'
-    },
-    { 
-      name: 'Regs & Policy', 
-      icon: Book, 
-      href: '/tools/regs-policy', 
-      description: 'FAR quick reference',
-      category: 'Reference'
-    },
+    { name: 'Acquisition Strategy', icon: Target, href: '/tools/acquisition-strategy', description: 'Develop comprehensive acquisition strategies' },
+    { name: 'Requirement Documents', icon: FileText, href: '/tools/requirement-documents', description: 'Generate SOWs, PWS, and requirements' },
+    { name: 'Market Analysis', icon: TrendingUp, href: '/tools/market-analysis', description: 'Conduct market research' },
+    { name: 'Evaluation Criteria', icon: CheckCircle, href: '/tools/evaluation-criteria', description: 'Create scoring methodologies' },
+    { name: 'SOP Creation', icon: FileCheck, href: '/tools/sop-creation', description: 'Standardize processes' },
+    { name: 'Stakeholder Mapping', icon: Users, href: '/tools/stakeholder-mapping', description: 'Identify key stakeholders' },
+    { name: 'Authority Assessment', icon: Shield, href: '/tools/authority-assessment', description: 'Determine optimal authority' },
+    { name: 'Slide Ranger', icon: Presentation, href: '/tools/slide-ranger', description: 'Generate presentations' },
+    { name: 'Document Analysis', icon: Search, href: '/tools/document-analysis', description: 'Review compliance' },
+    { name: 'Regs & Policy', icon: Book, href: '/tools/regs-policy', description: 'FAR quick reference' },
   ];
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-uswds-gray-5 flex items-center justify-center">
-        <div className="text-uswds-gray-70">Loading...</div>
+      <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+        <div className="text-slate-400">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-uswds-gray-5">
+    <div className="min-h-screen bg-[#0f172a]">
       {/* Header */}
-      <header className="bg-white border-b border-uswds-gray-10">
+      <header className="bg-[#1e293b] border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-uswds-blue rounded flex items-center justify-center">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Zap className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-uswds-gray-90 font-serif">RapidAcq</span>
+              <span className="text-xl font-bold text-white">RapidAcq</span>
             </div>
             <div className="flex items-center space-x-6">
               <div className="text-sm">
-                <div className="font-medium text-uswds-gray-90">{user.email}</div>
-                {orgName && <div className="text-uswds-gray-50 text-xs">{orgName}</div>}
+                <div className="font-medium text-white">{user.email}</div>
+                {orgName && <div className="text-slate-400 text-xs">{orgName}</div>}
               </div>
               <button
                 onClick={handleLogout}
-                className="text-uswds-gray-70 hover:text-uswds-red-warm transition flex items-center space-x-2"
+                className="text-slate-400 hover:text-white transition flex items-center space-x-2"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="text-sm font-medium">Logout</span>
@@ -145,11 +85,11 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Services Grid - Takes 2 columns */}
+          {/* Services Grid - 2 columns */}
           <div className="lg:col-span-2">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-uswds-gray-90 font-serif">Your Services</h1>
-              <p className="text-uswds-gray-70 mt-1">Select a service to get started</p>
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-white mb-2">Your Services</h1>
+              <p className="text-slate-400">Select a service to get started with your acquisition</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -159,26 +99,19 @@ export default function DashboardPage() {
                   <Link
                     key={service.name}
                     href={service.href}
-                    className="group bg-white p-6 rounded-lg border border-uswds-gray-10 hover:border-uswds-blue hover:shadow-lg transition-all"
+                    className="group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:bg-slate-800 hover:border-blue-500/50 transition-all duration-300"
                   >
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-uswds-blue-5 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-uswds-blue transition">
-                        <Icon className="h-6 w-6 text-uswds-blue group-hover:text-white transition" />
+                      <div className="w-12 h-12 bg-blue-600/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600/20 transition">
+                        <Icon className="h-6 w-6 text-blue-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-bold text-uswds-gray-90 group-hover:text-uswds-blue transition truncate">
-                            {service.name}
-                          </h3>
-                        </div>
-                        <p className="text-sm text-uswds-gray-70 line-clamp-2">
+                        <h3 className="font-bold text-white mb-1 group-hover:text-blue-400 transition">
+                          {service.name}
+                        </h3>
+                        <p className="text-sm text-slate-400 line-clamp-2">
                           {service.description}
                         </p>
-                        <div className="mt-2">
-                          <span className="inline-block text-xs font-medium text-uswds-blue bg-uswds-blue-5 px-2 py-1 rounded">
-                            {service.category}
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </Link>
@@ -187,20 +120,20 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* AI Assistant Sidebar - Takes 1 column */}
+          {/* AI Assistant Sidebar - 1 column */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <div className="bg-white rounded-lg border border-uswds-gray-10 shadow-sm overflow-hidden">
-                <div className="bg-gradient-to-r from-uswds-blue to-uswds-blue-70 p-6 text-white">
+              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
                   <div className="flex items-center space-x-3 mb-2">
-                    <MessageSquare className="h-6 w-6" />
-                    <h2 className="text-xl font-bold font-serif">AI Assistant</h2>
+                    <MessageSquare className="h-6 w-6 text-white" />
+                    <h2 className="text-xl font-bold text-white">AI Assistant</h2>
                   </div>
-                  <p className="text-uswds-blue-10 text-sm">
+                  <p className="text-blue-100 text-sm">
                     Get instant acquisition guidance
                   </p>
                 </div>
-                <div className="h-[calc(100vh-280px)]">
+                <div className="h-[calc(100vh-340px)]">
                   <AcquisitionChatbot />
                 </div>
               </div>
