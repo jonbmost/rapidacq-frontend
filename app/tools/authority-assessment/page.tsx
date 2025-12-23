@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Shield, ArrowLeft, Send, Loader2, Download } from 'lucide-react';
+import { Shield, ArrowLeft, Send, Loader2, Download, Zap } from 'lucide-react';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -13,7 +12,6 @@ interface Message {
 }
 
 export default function AuthorityAssessmentPage() {
-  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -76,73 +74,84 @@ export default function AuthorityAssessmentPage() {
   return (
     <div className="min-h-screen bg-uswds-gray-5">
       {/* Header */}
-      <div className="bg-uswds-gold text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-white/80 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center mt-4">
-            <Shield className="h-10 w-10 mr-4" />
-            <div>
-              <h1 className="text-3xl font-bold font-serif">Authority Needs Assessment</h1>
-              <p className="text-gold-100">Determine optimal acquisition authority</p>
+      <header className="bg-white border-b border-uswds-gray-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/dashboard" 
+                className="text-uswds-gray-70 hover:text-uswds-blue transition flex items-center space-x-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Link>
+              <div className="h-6 w-px bg-uswds-gray-30"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-uswds-blue-5 rounded flex items-center justify-center">
+                  <Shield className="h-5 w-5 text-uswds-blue" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-uswds-gray-90 font-serif">Authority Needs Assessment</h1>
+                </div>
+              </div>
             </div>
+            <button
+              onClick={exportConversation}
+              className="flex items-center space-x-2 text-uswds-gray-70 hover:text-uswds-blue transition"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-sm font-medium">Export</span>
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
           {/* Left Sidebar - Guide */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded border border-uswds-gray-30 p-6 sticky top-8">
-              <h3 className="font-bold text-uswds-gray-90 mb-4">Authority Options</h3>
+            <div className="bg-white rounded-lg border border-uswds-gray-10 p-6 sticky top-8">
+              <h3 className="font-bold text-uswds-gray-90 mb-4 flex items-center">
+                <Zap className="h-5 w-5 text-uswds-blue mr-2" />
+                Key Components
+              </h3>
               <ul className="space-y-3 text-sm text-uswds-gray-70">
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>FAR Part 12 (Commercial)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>FAR Part 15 (Negotiated)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>Other Transaction Authority (OTA)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>Commercial Solutions Opening (CSO)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>SBIR/STTR Phase III</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>Simplified Acquisition Procedures</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-gold mr-2">•</span>
+                  <span className="text-uswds-blue mr-2 mt-0.5">•</span>
                   <span>Authority comparison matrix</span>
                 </li>
               </ul>
-              
-              <button
-                onClick={exportConversation}
-                className="mt-6 w-full bg-uswds-gray-5 text-uswds-gray-90 px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export Assessment
-              </button>
             </div>
           </div>
 
           {/* Right Content - Chat Interface */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded border border-uswds-gray-30 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg border border-uswds-gray-10 shadow-sm flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
@@ -153,48 +162,49 @@ export default function AuthorityAssessmentPage() {
                     <div
                       className={`max-w-[80%] rounded-lg p-4 ${
                         message.role === 'user'
-                          ? 'bg-uswds-gold text-white'
-                          : 'bg-uswds-gray-5 text-uswds-gray-90'
+                          ? 'bg-uswds-blue text-white'
+                          : 'bg-uswds-gray-5 text-uswds-gray-90 border border-uswds-gray-10'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
                 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-uswds-gray-5 rounded-lg p-4">
-                      <Loader2 className="h-5 w-5 animate-spin text-uswds-gold" />
+                    <div className="bg-uswds-gray-5 rounded-lg p-4 border border-uswds-gray-10">
+                      <Loader2 className="h-5 w-5 animate-spin text-uswds-blue" />
                     </div>
                   </div>
-                )}
+                ))}
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-uswds-gray-30">
-                <div className="flex space-x-2">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-uswds-gray-10 bg-uswds-gray-2">
+                <div className="flex space-x-3">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Describe what you need to acquire..."
-                    className="flex-1 px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-gold"
+                    className="flex-1 px-4 py-3 border border-uswds-gray-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-uswds-blue focus:border-transparent"
                     disabled={loading}
                   />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    className="bg-uswds-gold text-white px-6 py-2 rounded font-semibold hover:bg-uswds-gold-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
+                    className="bg-uswds-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-uswds-blue-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed transition flex items-center space-x-2 shadow-sm"
                   >
                     <Send className="h-4 w-4" />
+                    <span>Send</span>
                   </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
