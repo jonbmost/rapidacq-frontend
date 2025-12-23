@@ -52,27 +52,27 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-uswds-gray-5 flex items-center justify-center">
+    <div className="min-h-screen bg-slate-900 flex items-center justify-center">
       <div className="max-w-md w-full mx-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-uswds-blue rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
             <Shield className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-uswds-gray-90 mb-2 font-serif">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2 font-serif">
             Admin Access
           </h1>
-          <p className="text-uswds-gray-70">
+          <p className="text-slate-400">
             RapidAcq Administration Portal
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded border border-uswds-gray-30 p-8">
+        <div className="bg-slate-800 rounded border border-slate-700 p-8 shadow-lg">
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email */}
             <div>
-              <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+              <label className="block text-sm font-bold text-slate-200 mb-2">
                 <Mail className="inline h-4 w-4 mr-1" />
                 Admin Email *
               </label>
@@ -81,14 +81,14 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                className="w-full px-4 py-2 border-2 border-slate-700 bg-slate-900 text-slate-100 rounded focus:outline-none focus:border-blue-500 placeholder-slate-500"
                 placeholder="admin@rapidacq.com"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+              <label className="block text-sm font-bold text-slate-200 mb-2">
                 <Lock className="inline h-4 w-4 mr-1" />
                 Password *
               </label>
@@ -97,14 +97,14 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                className="w-full px-4 py-2 border-2 border-slate-700 bg-slate-900 text-slate-100 rounded focus:outline-none focus:border-blue-500 placeholder-slate-500"
                 placeholder="••••••••"
               />
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
+              <div className="p-4 bg-red-900/20 border border-red-700 text-red-300 rounded text-sm">
                 {error}
               </div>
             )}
@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-uswds-blue text-white py-3 rounded font-bold hover:bg-uswds-blue-70 disabled:bg-uswds-gray-50"
+              className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition"
             >
               {loading ? 'Signing In...' : 'Sign In as Admin'}
             </button>
@@ -123,7 +123,7 @@ export default function AdminLoginPage() {
           <div className="mt-4 text-center">
             <Link
               href="/admin/forgot-password"
-              className="text-sm text-uswds-blue hover:text-uswds-blue-70"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               Forgot your password?
             </Link>
@@ -131,8 +131,8 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-6 text-center text-sm text-uswds-gray-70">
-          <Link href="/" className="hover:text-uswds-blue">
+        <div className="mt-6 text-center text-sm text-slate-400">
+          <Link href="/" className="hover:text-blue-400">
             ← Back to Home
           </Link>
         </div>
