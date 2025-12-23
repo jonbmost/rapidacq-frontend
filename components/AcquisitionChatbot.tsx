@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { Send, Loader2, Download } from 'lucide-react';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -12,20 +14,11 @@ export default function AcquisitionChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your AI Acquisition Assistant. I can help you with federal acquisition strategies, FAR compliance, market research, and more. How can I assist you today?'
+      content: 'Hello! I am your intelligent procurement assistant. How can I help you plan your agile acquisition today? You can ask me to draft a document, provide guidance on FAR, or help with evaluation strategies.'
     }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +30,6 @@ export default function AcquisitionChatbot() {
     setLoading(true);
 
     try {
-      const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
-      
       const response = await fetch(`${BACKEND_URL}/api/chat`, {
         method: 'POST',
         headers: {
@@ -50,9 +41,7 @@ export default function AcquisitionChatbot() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
+      if (!response.ok) throw new Error('Failed to get response');
 
       const data = await response.json();
       
@@ -71,88 +60,72 @@ export default function AcquisitionChatbot() {
     }
   };
 
-  return (
-    <div className="bg-white rounded-lg border-2 border-uswds-gray-30 flex flex-col h-[600px]">
-      {/* Header */}
-      <div className="bg-uswds-blue text-white p-4 rounded-t-lg flex items-center">
-        <Bot className="h-6 w-6 mr-2" />
-        <div>
-          <h3 className="font-bold">AI Acquisition Assistant</h3>
-          <p className="text-xs text-uswds-blue-20">Powered by Claude with Federal Acquisition Expertise</p>
-        </div>
-      </div>
+  const exportConversation = () => {
+    const content = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'conversation.txt';
+    a.click();
+  };
 
+  return (
+    <div className="flex flex-col h-full bg-[#0f172a]">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`flex items-start space-x-2 max-w-[80%] ${
-                message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              className={`max-w-[85%] rounded-lg p-4 ${
+                message.role === 'user'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-100 border border-slate-700'
               }`}
             >
-              <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  message.role === 'user'
-                    ? 'bg-uswds-blue text-white'
-                    : 'bg-uswds-gray-10 text-uswds-gray-70'
-                }`}
-              >
-                {message.role === 'user' ? (
-                  <User className="h-4 w-4" />
-                ) : (
-                  <Bot className="h-4 w-4" />
-                )}
-              </div>
-              <div
-                className={`rounded-lg p-3 ${
-                  message.role === 'user'
-                    ? 'bg-uswds-blue text-white'
-                    : 'bg-uswds-gray-5 text-uswds-gray-90'
-                }`}
-              >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-              </div>
+              <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+              {message.role === 'assistant' && index > 0 && (
+                <button
+                  onClick={exportConversation}
+                  className="mt-2 text-xs text-slate-400 hover:text-blue-400 transition flex items-center space-x-1"
+                >
+                  <Download className="h-3 w-3" />
+                  <span>Download</span>
+                </button>
+              )}
             </div>
           </div>
         ))}
         
         {loading && (
           <div className="flex justify-start">
-            <div className="flex items-start space-x-2">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-uswds-gray-10 text-uswds-gray-70 flex items-center justify-center">
-                <Bot className="h-4 w-4" />
-              </div>
-              <div className="bg-uswds-gray-5 rounded-lg p-3">
-                <Loader2 className="h-5 w-5 animate-spin text-uswds-blue" />
-              </div>
+            <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+              <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
             </div>
           </div>
         )}
-        
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-4 border-t border-uswds-gray-30">
-        <div className="flex space-x-2">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
+        <div className="flex space-x-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about acquisition strategies, FAR compliance, market research..."
-            className="flex-1 px-4 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+            placeholder="Draft a SOO for a SaaS prototype..."
+            className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="bg-uswds-blue text-white px-6 py-2 rounded font-semibold hover:bg-uswds-blue-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
+            className="bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center justify-center"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-5 w-5" />
           </button>
         </div>
       </form>
