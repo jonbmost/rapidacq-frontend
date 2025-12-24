@@ -11,19 +11,18 @@ interface Message {
   content: string;
 }
 
-const RECOMMENDED_RESOURCES = [
-  { label: "Leading Agile Acquisition", url: 'https://joinmost.org/agile-book' },
-  { label: 'TechFAR Hub', url: 'https://techfarhub.usds.gov/' },
-  { label: 'FAR Overhaul', url: 'https://www.acquisition.gov/far-overhaul' },
-  { label: 'DFARS', url: 'https://www.acquisition.gov/dfars' },
-  { label: 'FAR Index', url: 'https://www.acquisition.gov/browse/index/far' },
+const POLICY_CATEGORIES = [
+  { category: 'FAR', topics: ['FAR Part 12 - Commercial Items', 'FAR Part 15 - Negotiation', 'FAR Part 39 - IT Acquisition'] },
+  { category: 'DFARS', topics: ['DFARS 252 - Clauses', 'DFARS Cybersecurity', 'DFARS Middle Tier Acquisition'] },
+  { category: 'State Dept', topics: ['FAM - Foreign Affairs Manual', 'FAH - Foreign Affairs Handbook', 'State Dept procurement'] },
+  { category: 'Other', topics: ['OMB Memos & Guidance', 'DoD Instructions & Policies', 'Alternative Authorities (OTA, CSO)'] },
 ];
 
 export default function RegsPolicyPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to Regs & Policy. Provide a URL and ask questions about acquisition regulations or policy pages. I will fetch and analyze the content for you.'
+      content: 'Welcome to the Regs & Policy reference tool. I can help you understand federal acquisition regulations including FAR, DFARS, FAM/FAH, OMB guidance, DoD policies, and alternative authorities. What would you like to know?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -45,7 +44,7 @@ export default function RegsPolicyPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: `[Regs & Policy - Web Content Analysis] ${userMessage}`,
+          message: `[Federal Acquisition Regulations & Policy Reference] ${userMessage}`,
           history: messages
         }),
       });
@@ -79,8 +78,8 @@ export default function RegsPolicyPage() {
     a.click();
   };
 
-  const insertResource = (url: string) => {
-    setInput(`Please analyze this page: ${url}\n\nQuestion: `);
+  const askAbout = (topic: string) => {
+    setInput(`Tell me about ${topic}`);
   };
 
   return (
@@ -123,29 +122,25 @@ export default function RegsPolicyPage() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Left Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
-              <h3 className="font-bold text-white mb-4 flex items-center">
-                <BookOpen className="h-5 w-5 text-blue-500 mr-2" />
-                Quick Resources
-              </h3>
-              <ul className="space-y-3 text-sm text-slate-400">
-                {RECOMMENDED_RESOURCES.map((resource) => (
-                  <li key={resource.url} className="flex items-start">
-                    <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                    <button
-                      onClick={() => insertResource(resource.url)}
-                      className="text-left hover:text-blue-400 transition"
-                    >
-                      {resource.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6 pt-6 border-t border-slate-700">
-                <p className="text-xs text-slate-500">
-                  Tip: Include the URL in your question, like "Analyze https://acquisition.gov and explain..."
-                </p>
-              </div>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8 space-y-6">
+              {POLICY_CATEGORIES.map((category) => (
+                <div key={category.category}>
+                  <h3 className="font-bold text-white mb-3 text-sm uppercase tracking-wide">{category.category}</h3>
+                  <ul className="space-y-2 text-sm text-slate-400">
+                    {category.topics.map((topic) => (
+                      <li key={topic} className="flex items-start">
+                        <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                        <button
+                          onClick={() => askAbout(topic)}
+                          className="text-left hover:text-blue-400 transition"
+                        >
+                          {topic}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -187,7 +182,7 @@ export default function RegsPolicyPage() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about a regulation page (include URL in your message)..."
+                    placeholder="Ask about FAR, DFARS, FAM, OMB, DoD policy, or alternative authorities..."
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
