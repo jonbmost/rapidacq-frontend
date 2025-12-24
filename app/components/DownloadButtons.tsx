@@ -2,6 +2,7 @@
 
 import { Download, FileText, Presentation } from 'lucide-react';
 import { useState } from 'react';
+import { trackToolUsage } from '@/app/utils/analytics';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -48,6 +49,9 @@ export default function DownloadButtons({ messages, toolContext }: DownloadButto
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
+
+      // Track download
+      trackToolUsage(toolContext, 'download');
     } catch (error) {
       alert('Failed to generate document');
     } finally {
