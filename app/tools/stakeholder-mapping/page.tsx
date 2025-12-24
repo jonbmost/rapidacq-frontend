@@ -17,7 +17,7 @@ export default function StakeholderMappingPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the Stakeholder Mapping tool. I can help you identify and analyze key stakeholders, map their roles and interests, and develop effective communication strategies. Who are the stakeholders for your acquisition?'
+      content: 'Welcome to the Stakeholder Mapping tool. I can help you identify key stakeholders, map their interests and influence, and develop engagement strategies for your acquisition. What acquisition are you planning?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -69,65 +69,133 @@ export default function StakeholderMappingPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'stakeholder-map.txt';
+    a.download = 'stakeholder-mapping.txt';
     a.click();
   };
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
-      <div className="bg-uswds-green text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center mt-4">
-            <Users className="h-10 w-10 mr-4" />
-            <div>
-              <h1 className="text-3xl font-bold font-serif">Stakeholder Mapping</h1>
-              <p className="text-green-100">Identify and analyze key stakeholders</p>
+      {/* Header */}
+      <header className="bg-[#1e293b] border-b border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/dashboard" 
+                className="text-slate-400 hover:text-white transition flex items-center space-x-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Link>
+              <div className="h-6 w-px bg-slate-700"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                  <Users className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">Stakeholder Mapping</h1>
+                </div>
+              </div>
             </div>
+            <button
+              onClick={exportConversation}
+              className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-sm font-medium">Export</span>
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Left Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
-              <h3 className="font-bold text-white mb-4">Mapping Components</h3>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+              <h3 className="font-bold text-white mb-4 flex items-center">
+                <Users className="h-5 w-5 text-blue-500 mr-2" />
+                Analysis Areas
+              </h3>
               <ul className="space-y-3 text-sm text-slate-400">
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Stakeholder identification</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Role and responsibility matrix</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Influence and interest analysis</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Communication requirements</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Approval chain mapping</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Risk and issue escalation paths</span></li>
-                <li className="flex items-start"><span className="text-uswds-green mr-2">•</span><span>Engagement strategy</span></li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Stakeholder identification</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Interest and influence mapping</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Power/interest matrix</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Engagement strategies</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Communication plans</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Risk mitigation</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Coalition building</span>
+                </li>
               </ul>
-              <button onClick={exportConversation} className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center">
-                <Download className="h-4 w-4 mr-2" />Export Map
-              </button>
             </div>
           </div>
 
-          <div className="lg:col-span-2">
-            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
+          {/* Right Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-lg p-4 ${message.role === 'user' ? 'bg-uswds-green text-white' : 'bg-[#0f172a] text-white'}`}>
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <div
+                    key={index}
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg p-4 ${
+                        message.role === 'user'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-900/50 text-slate-100 border border-slate-700'
+                      }`}
+                    >
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
-                {loading && <div className="flex justify-start"><div className="bg-[#0f172a] rounded-lg p-4"><Loader2 className="h-5 w-5 animate-spin text-uswds-green" /></div></div>}
+                
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                      <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
-                <div className="flex space-x-2">
-                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Describe your acquisition stakeholders..." className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-uswds-green" disabled={loading} />
-                  <button type="submit" disabled={loading || !input.trim()} className="bg-uswds-green text-white px-6 py-2 rounded font-semibold hover:bg-uswds-green-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
+                <div className="flex space-x-3">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Describe your acquisition stakeholders..."
+                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={loading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading || !input.trim()}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2"
+                  >
                     <Send className="h-4 w-4" />
                   </button>
                 </div>
@@ -135,7 +203,7 @@ export default function StakeholderMappingPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
