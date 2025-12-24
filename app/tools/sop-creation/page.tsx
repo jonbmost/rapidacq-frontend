@@ -69,81 +69,91 @@ export default function SOPCreationPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'sop-document.txt';
+    a.download = 'sop-creation.txt';
     a.click();
   };
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
       {/* Header */}
-      <div className="bg-uswds-blue text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center mt-4">
-            <FileCheck className="h-10 w-10 mr-4" />
-            <div>
-              <h1 className="text-3xl font-bold font-serif">SOP Creation</h1>
-              <p className="text-blue-100">Develop standard operating procedures for acquisitions</p>
+      <header className="bg-[#1e293b] border-b border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/dashboard" 
+                className="text-slate-400 hover:text-white transition flex items-center space-x-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Link>
+              <div className="h-6 w-px bg-slate-700"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                  <FileCheck className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">SOP Creation</h1>
+                </div>
+              </div>
             </div>
+            <button
+              onClick={exportConversation}
+              className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-sm font-medium">Export</span>
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Sidebar - Guide */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Left Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
-              <h3 className="font-bold text-white mb-4">SOP Components</h3>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+              <h3 className="font-bold text-white mb-4 flex items-center">
+                <FileCheck className="h-5 w-5 text-blue-500 mr-2" />
+                SOP Components
+              </h3>
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Process workflow steps</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Process workflows</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Step-by-step procedures</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
                   <span>Roles and responsibilities</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Required documentation</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Quality checkpoints</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Approval authorities</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Documentation requirements</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Compliance checkpoints</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Templates and forms</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Quality control measures</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-uswds-blue mr-2">•</span>
-                  <span>Templates and tools</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Review and approval flows</span>
                 </li>
               </ul>
-              
-              <button
-                onClick={exportConversation}
-                className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export SOP
-              </button>
             </div>
           </div>
 
-          {/* Right Content - Chat Interface */}
-          <div className="lg:col-span-2">
-            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
-              {/* Messages */}
+          {/* Right Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -153,39 +163,38 @@ export default function SOPCreationPage() {
                     <div
                       className={`max-w-[80%] rounded-lg p-4 ${
                         message.role === 'user'
-                          ? 'bg-uswds-blue text-white'
-                          : 'bg-[#0f172a] text-white'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-900/50 text-slate-100 border border-slate-700'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
                 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-[#0f172a] rounded-lg p-4">
-                      <Loader2 className="h-5 w-5 animate-spin text-uswds-blue" />
+                    <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                      <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Input */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
-                <div className="flex space-x-2">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
+                <div className="flex space-x-3">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="What process needs standardization?"
-                    className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-uswds-blue"
+                    placeholder="Describe the process that needs an SOP..."
+                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    className="bg-uswds-blue text-white px-6 py-2 rounded font-semibold hover:bg-uswds-blue-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2"
                   >
                     <Send className="h-4 w-4" />
                   </button>
@@ -194,7 +203,7 @@ export default function SOPCreationPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
