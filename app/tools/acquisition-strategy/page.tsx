@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Target, ArrowLeft, Send, Loader2, Download, Wrench } from 'lucide-react';
+import DownloadButtons from '@/app/components/DownloadButtons';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -12,10 +14,11 @@ interface Message {
 }
 
 export default function AcquisitionStrategyPage() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the Acquisition Strategy tool. I can help you develop comprehensive acquisition strategies including approach selection, timeline planning, risk mitigation, and stakeholder coordination. What acquisition are you planning?'
+      content: 'Welcome to Acquisition Strategy. I can help you develop comprehensive acquisition strategies, select the right contract vehicle, and structure your approach. What acquisition challenge are you working on?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -95,13 +98,16 @@ export default function AcquisitionStrategyPage() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={exportConversation}
-              className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
-            >
-              <Download className="h-4 w-4" />
-              <span className="text-sm font-medium">Export</span>
-            </button>
+            <div className="flex items-center gap-4">
+              <DownloadButtons messages={messages} toolContext="acquisition-strategy" />
+              <button
+                onClick={exportConversation}
+                className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
+              >
+                <Download className="h-4 w-4" />
+                <span className="text-sm font-medium">Export</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -109,7 +115,7 @@ export default function AcquisitionStrategyPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-4 gap-8">
-          {/* Left Sidebar - Guide */}
+          {/* Left Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
               <h3 className="font-bold text-white mb-4 flex items-center">
@@ -119,15 +125,19 @@ export default function AcquisitionStrategyPage() {
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Market research summary</span>
+                  <span>Requirements analysis</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Acquisition approach</span>
+                  <span>Market research</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Timeline and milestones</span>
+                  <span>Contract vehicle selection</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Acquisition timeline</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
@@ -135,24 +145,15 @@ export default function AcquisitionStrategyPage() {
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Small business considerations</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Contract type recommendation</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Stakeholder coordination</span>
+                  <span>Source selection approach</span>
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Right Content - Chat Interface */}
+          {/* Chat Area */}
           <div className="lg:col-span-3">
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
-              {/* Messages */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -180,14 +181,13 @@ export default function AcquisitionStrategyPage() {
                 )}
               </div>
 
-              {/* Input */}
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
                 <div className="flex space-x-3">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Describe your acquisition need..."
+                    placeholder="Describe your acquisition needs..."
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
