@@ -14,15 +14,23 @@ export async function POST(request: NextRequest) {
 
     console.log('Querying tomcp with:', { mcpUrl, question });
 
-    // Call the tomcp service
-    const tomcpResponse = await fetch('https://tomcp.org/api/query', {
+    // Call the tomcp service with JSON-RPC format
+    const tomcpResponse = await fetch('https://tomcp.org/sse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        url: mcpUrl,
-        query: question,
+        jsonrpc: '2.0',
+        method: 'tools/call',
+        params: {
+          name: 'fetch_url',
+          arguments: {
+            url: mcpUrl,
+            query: question,
+          }
+        },
+        id: Date.now()
       }),
     });
 
@@ -38,7 +46,19 @@ export async function POST(request: NextRequest) {
     const data = await tomcpResponse.json();
     console.log('tomcp response:', JSON.stringify(data, null, 2));
 
-    // Return the full response to help debug
+    // Extract the answer from JSON-RPC response
+    if (data.result?.content) {
+      const content = Array.isArray(data.result.content) 
+        ? data.result.content[0]?.text 
+        : data.result.content;
+      
+      return NextResponse.json({
+        answer: content,
+        content: data.result.content
+      });
+    }
+
+    // Return full response if structure is different
     return NextResponse.json(data);
 
   } catch (error) {
