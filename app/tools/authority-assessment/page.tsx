@@ -17,7 +17,7 @@ export default function AuthorityAssessmentPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the Authority Needs Assessment tool. I can help you determine the optimal acquisition authority (FAR, OTA, CSO, SBIR Phase III) based on your requirement characteristics and objectives. What are you trying to acquire?'
+      content: 'Welcome to Authority Assessment. I can help you identify the most appropriate acquisition authority for your needs, including OTA, CSO, FAR-based, or SBIR Phase III pathways. What are you trying to acquire?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -75,7 +75,7 @@ export default function AuthorityAssessmentPage() {
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
-     {/* Header */}
+      {/* Header */}
       <header className="bg-[#1e293b] border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -109,57 +109,51 @@ export default function AuthorityAssessmentPage() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Sidebar - Guide */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Left Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
-              <h3 className="font-bold text-white mb-4">Authority Options</h3>
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+              <h3 className="font-bold text-white mb-4 flex items-center">
+                <Shield className="h-5 w-5 text-blue-500 mr-2" />
+                Acquisition Authorities
+              </h3>
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span>FAR Part 12 (Commercial)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span>FAR Part 15 (Negotiated)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
                   <span>Other Transaction Authority (OTA)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
                   <span>Commercial Solutions Opening (CSO)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span>SBIR/STTR Phase III</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>SBIR Phase III</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span>Simplified Acquisition Procedures</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>FAR Part 12 (Commercial)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-blue-500 mr-2">•</span>
-                  <span>Authority comparison matrix</span>
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>FAR Part 15 (Negotiated)</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>8(a) Set-Aside</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-0.5">•</span>
+                  <span>Sole Source Justifications</span>
                 </li>
               </ul>
-              
-              <button
-                onClick={exportConversation}
-                className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export Assessment
-              </button>
             </div>
           </div>
 
-          {/* Right Content - Chat Interface */}
-          <div className="lg:col-span-2">
-            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
-              {/* Messages */}
+          {/* Right Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg flex flex-col" style={{ height: 'calc(100vh - 180px)' }}>
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -169,39 +163,38 @@ export default function AuthorityAssessmentPage() {
                     <div
                       className={`max-w-[80%] rounded-lg p-4 ${
                         message.role === 'user'
-                          ? 'bg-[#1e293b] text-white'
-                          : 'bg-[#0f172a] text-white'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-900/50 text-slate-100 border border-slate-700'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
                 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-[#0f172a] rounded-lg p-4">
+                    <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
                       <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Input */}
-              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
-                <div className="flex space-x-2">
+              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
+                <div className="flex space-x-3">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Describe what you need to acquire..."
-                    className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-slate-700"
+                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    className="bg-[#1e293b] text-white px-6 py-2 rounded font-semibold hover:bg-[#1e293b]-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2"
                   >
                     <Send className="h-4 w-4" />
                   </button>
@@ -210,7 +203,7 @@ export default function AuthorityAssessmentPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
