@@ -12,6 +12,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('Querying tomcp with:', { mcpUrl, question });
+
     // Call the tomcp service
     const tomcpResponse = await fetch('https://tomcp.org/api/query', {
       method: 'POST',
@@ -26,6 +28,7 @@ export async function POST(request: NextRequest) {
 
     if (!tomcpResponse.ok) {
       const errorText = await tomcpResponse.text();
+      console.error('tomcp error:', errorText);
       return NextResponse.json(
         { error: `tomcp service error: ${errorText}` },
         { status: tomcpResponse.status }
@@ -33,12 +36,10 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await tomcpResponse.json();
+    console.log('tomcp response:', JSON.stringify(data, null, 2));
 
-    return NextResponse.json({
-      answer: data.answer || data.response || data.content,
-      content: data.content,
-      ...data
-    });
+    // Return the full response to help debug
+    return NextResponse.json(data);
 
   } catch (error) {
     console.error('URL Query API Error:', error);
