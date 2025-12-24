@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Shield, Users, CheckCircle, XCircle, Clock, LogOut } from 'lucide-react';
+import { Shield, Users, CheckCircle, XCircle, Clock, LogOut, Upload, FileText, Loader2, AlertCircle, Database } from 'lucide-react';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -13,6 +13,13 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
+  
+  // Knowledge Base Upload State
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('guidance');
+  const [uploading, setUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
     // Check if admin is logged in
@@ -59,7 +66,6 @@ export default function AdminPage() {
       const data = await response.json();
 
       if (data.success) {
-        // Refresh the list
         fetchOrganizations();
       } else {
         alert('Failed to approve organization');
@@ -84,7 +90,6 @@ export default function AdminPage() {
       const data = await response.json();
 
       if (data.success) {
-        // Refresh the list
         fetchOrganizations();
       } else {
         alert('Failed to reject organization');
@@ -92,6 +97,58 @@ export default function AdminPage() {
     } catch (err) {
       console.error('Error rejecting organization:', err);
       alert('Failed to reject organization');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      if (!title) {
+        const fileName = selectedFile.name.replace(/\.[^/.]+$/, '');
+        setTitle(fileName);
+      }
+    }
+  };
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!file || !title) {
+      setUploadMessage({ type: 'error', text: 'Please select a file and provide a title' });
+      return;
+    }
+
+    setUploading(true);
+    setUploadMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', title);
+      formData.append('category', category);
+
+      const response = await fetch(`${BACKEND_URL}/api/knowledge-base/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUploadMessage({ type: 'success', text: `Successfully uploaded: ${title}` });
+        setFile(null);
+        setTitle('');
+        const fileInput = document.getElementById('file-input') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+      } else {
+        setUploadMessage({ type: 'error', text: data.error || 'Upload failed' });
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadMessage({ type: 'error', text: 'Failed to upload document' });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -142,9 +199,9 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {/* Stats */}
+        <div className="grid md:grid-cols-4 gap-6">
           <div className="bg-white p-6 rounded border border-uswds-gray-30">
             <div className="flex items-center justify-between">
               <div>
@@ -186,6 +243,106 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Knowledge Base Upload */}
+        <div className="bg-white rounded border border-uswds-gray-30 p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Database className="h-6 w-6 text-uswds-blue" />
+            <h2 className="text-2xl font-bold text-uswds-gray-90">Knowledge Base Upload</h2>
+          </div>
+
+          <form onSubmit={handleUpload} className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* File Upload */}
+              <div>
+                <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+                  Document File *
+                </label>
+                <input
+                  id="file-input"
+                  type="file"
+                  accept=".pdf,.txt,.docx"
+                  onChange={handleFileChange}
+                  className="w-full px-3 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                />
+                {file && (
+                  <p className="text-sm text-uswds-gray-70 mt-1">
+                    {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                  </p>
+                )}
+              </div>
+
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+                  Document Title *
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g., NDAA 2026 Changes"
+                  className="w-full px-3 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-bold text-uswds-gray-90 mb-2">
+                Category
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 border-2 border-uswds-gray-30 rounded focus:outline-none focus:border-uswds-blue"
+              >
+                <option value="guidance">Guidance</option>
+                <option value="regulation">Regulation</option>
+                <option value="template">Template</option>
+                <option value="playbook">Playbook</option>
+                <option value="policy">Policy</option>
+                <option value="reference">Reference</option>
+              </select>
+            </div>
+
+            {/* Message */}
+            {uploadMessage && (
+              <div className={`flex items-center gap-3 p-4 rounded ${
+                uploadMessage.type === 'success' 
+                  ? 'bg-uswds-green-5 text-uswds-green' 
+                  : 'bg-red-50 text-uswds-red-warm'
+              }`}>
+                {uploadMessage.type === 'success' ? (
+                  <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                )}
+                <span>{uploadMessage.text}</span>
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={uploading || !file || !title}
+              className="bg-uswds-blue text-white px-6 py-3 rounded font-bold hover:bg-uswds-blue-70 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="h-5 w-5" />
+                  <span>Upload to Knowledge Base</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+
         {/* Organizations List */}
         <div className="bg-white rounded border border-uswds-gray-30">
           <div className="p-6 border-b border-uswds-gray-30">
@@ -202,7 +359,6 @@ export default function AdminPage() {
             <div className="p-8 text-center text-uswds-gray-70">
               <Users className="h-12 w-12 mx-auto mb-4 text-uswds-gray-30" />
               <p>No organizations found</p>
-              <p className="text-sm">Organizations will appear here once they complete onboarding</p>
             </div>
           ) : (
             <div className="divide-y divide-uswds-gray-30">
