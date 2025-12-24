@@ -17,7 +17,7 @@ export default function StakeholderMappingPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the Stakeholder Mapping tool. I can help you identify key stakeholders, map their interests and influence, and develop engagement strategies for your acquisition. What acquisition are you planning?'
+      content: 'Welcome to Stakeholder Mapping. I can help you identify who you need to talk to, coordinate with, and get buy-in or approval from for your acquisition. This includes navigating organizational structures, understanding approval chains, and identifying key decision-makers. What acquisition or organization are you working with?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -39,7 +39,7 @@ export default function StakeholderMappingPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: `[Stakeholder Mapping Context] ${userMessage}`,
+          message: `[Stakeholder Mapping - Organizational Navigation & Approval Chains] ${userMessage}`,
           history: messages
         }),
       });
@@ -116,38 +116,43 @@ export default function StakeholderMappingPage() {
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
               <h3 className="font-bold text-white mb-4 flex items-center">
                 <Users className="h-5 w-5 text-blue-500 mr-2" />
-                Analysis Areas
+                Key Questions
               </h3>
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Stakeholder identification</span>
+                  <span>Who needs to approve this?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Interest and influence mapping</span>
+                  <span>What's the approval chain?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Power/interest matrix</span>
+                  <span>Who should I coordinate with?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Engagement strategies</span>
+                  <span>What offices need buy-in?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Communication plans</span>
+                  <span>Who are the decision-makers?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Risk mitigation</span>
+                  <span>What's the org structure?</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2 mt-0.5">•</span>
-                  <span>Coalition building</span>
+                  <span>Who has veto authority?</span>
                 </li>
               </ul>
+              <div className="mt-6 pt-6 border-t border-slate-700">
+                <p className="text-xs text-slate-500">
+                  Tip: Mention your organization, agency, or specific office for targeted guidance on org charts and approval processes.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -187,7 +192,7 @@ export default function StakeholderMappingPage() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Describe your acquisition stakeholders..."
+                    placeholder="Ask about stakeholders, approval chains, or organizational structure..."
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
