@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { BookOpen, ArrowLeft, Send, Loader2, Download } from 'lucide-react';
+import DownloadButtons from '@/app/components/DownloadButtons';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -106,6 +107,7 @@ export default function RegsPolicyPage() {
                 </div>
               </div>
             </div>
+              <DownloadButtons messages={messages} toolContext="regs-policy" />
             <button
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
@@ -130,6 +132,7 @@ export default function RegsPolicyPage() {
                     {category.topics.map((topic) => (
                       <li key={topic} className="flex items-start">
                         <span className="text-blue-500 mr-2 mt-0.5">•</span>
+              <DownloadButtons messages={messages} toolContext="regs-policy" />
                         <button
                           onClick={() => askAbout(topic)}
                           className="text-left hover:text-blue-400 transition"
@@ -186,6 +189,7 @@ export default function RegsPolicyPage() {
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
+              <DownloadButtons messages={messages} toolContext="regs-policy" />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}

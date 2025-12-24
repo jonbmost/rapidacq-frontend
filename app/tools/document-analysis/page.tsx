@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Search, ArrowLeft, Send, Loader2, Download } from 'lucide-react';
+import DownloadButtons from '@/app/components/DownloadButtons';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -97,6 +98,7 @@ export default function DocumentAnalysisPage() {
                 </div>
               </div>
             </div>
+              <DownloadButtons messages={messages} toolContext="document-analysis" />
             <button
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
