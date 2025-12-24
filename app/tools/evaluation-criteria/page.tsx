@@ -17,7 +17,7 @@ export default function EvaluationCriteriaPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome to the Evaluation Criteria tool. I can help you develop objective, defensible evaluation criteria and scoring methodologies for source selection. What are you evaluating?'
+      content: 'Welcome to the Evaluation Criteria tool. I can help you develop objective, performance-based evaluation criteria including technical factors, past performance metrics, and scoring methodologies. What type of acquisition are you evaluating?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -62,80 +62,3 @@ export default function EvaluationCriteriaPage() {
       setLoading(false);
     }
   };
-
-  const exportConversation = () => {
-    const content = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'evaluation-criteria.txt';
-    a.click();
-  };
-
-  return (
-    <div className="min-h-screen bg-[#0f172a]">
-      <div className="bg-uswds-red-warm text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center mt-4">
-            <CheckCircle className="h-10 w-10 mr-4" />
-            <div>
-              <h1 className="text-3xl font-bold font-serif">Evaluation Criteria</h1>
-              <p className="text-red-100">Create objective evaluation criteria for source selection</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 rounded border border-slate-700 p-6 sticky top-8">
-              <h3 className="font-bold text-white mb-4">Criteria Components</h3>
-              <ul className="space-y-3 text-sm text-slate-400">
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Technical evaluation factors</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Past performance criteria</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Management approach factors</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Cost/price evaluation methodology</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Scoring and weighting strategy</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Trade-off analysis approach</span></li>
-                <li className="flex items-start"><span className="text-uswds-red-warm mr-2">•</span><span>Compliance with FAR 15.304</span></li>
-              </ul>
-              <button onClick={exportConversation} className="mt-6 w-full bg-[#0f172a] text-white px-4 py-2 rounded font-semibold hover:bg-uswds-gray-10 flex items-center justify-center">
-                <Download className="h-4 w-4 mr-2" />Export Criteria
-              </button>
-            </div>
-          </div>
-
-          <div className="lg:col-span-2">
-            <div className="bg-slate-800/50 rounded border border-slate-700 flex flex-col" style={{ height: 'calc(100vh - 300px)' }}>
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {messages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-lg p-4 ${message.role === 'user' ? 'bg-uswds-red-warm text-white' : 'bg-[#0f172a] text-white'}`}>
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {loading && <div className="flex justify-start"><div className="bg-[#0f172a] rounded-lg p-4"><Loader2 className="h-5 w-5 animate-spin text-uswds-red-warm" /></div></div>}
-              </div>
-
-              <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700">
-                <div className="flex space-x-2">
-                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="What evaluation criteria do you need?" className="flex-1 px-4 py-2 border-2 border-slate-700 rounded focus:outline-none focus:border-uswds-red-warm" disabled={loading} />
-                  <button type="submit" disabled={loading || !input.trim()} className="bg-uswds-red-warm text-white px-6 py-2 rounded font-semibold hover:opacity-90 disabled:bg-uswds-gray-30 disabled:cursor-not-allowed flex items-center">
-                    <Send className="h-4 w-4" />
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
