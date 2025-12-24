@@ -75,22 +75,38 @@ export default function AuthorityAssessmentPage() {
 
   return (
     <div className="min-h-screen bg-[#0f172a]">
-      {/* Header */}
-      <div className="bg-[#1e293b] text-white py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <Link href="/dashboard" className="text-slate-400 hover:text-white mb-4 inline-flex items-center">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Link>
-          <div className="flex items-center mt-4">
-            <Shield className="h-10 w-10 mr-4" />
-            <div>
-              <h1 className="text-3xl font-bold font-serif">Authority Needs Assessment</h1>
-              <p className="text-slate-400">Determine optimal acquisition authority</p>
+     {/* Header */}
+      <header className="bg-[#1e293b] border-b border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/dashboard" 
+                className="text-slate-400 hover:text-white transition flex items-center space-x-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Link>
+              <div className="h-6 w-px bg-slate-700"></div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                  <Shield className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">Authority Assessment</h1>
+                </div>
+              </div>
             </div>
+            <button
+              onClick={exportConversation}
+              className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-sm font-medium">Export</span>
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
