@@ -38,7 +38,7 @@ export default function RegsPolicyPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat`, {
+      const response = await fetch(${BACKEND_URL}/api/chat, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
