@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Target, ArrowLeft, Send, Loader2, Download, Wrench } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
+import IntakeForm from '@/app/components/IntakeForm';
+import { intakeConfigs } from '@/app/config/intakeQuestions';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
 
@@ -15,21 +17,21 @@ interface Message {
 
 export default function AcquisitionStrategyPage() {
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'Welcome to Acquisition Strategy. I can help you develop comprehensive acquisition strategies, select the right contract vehicle, and structure your approach. What acquisition challenge are you working on?'
-    }
-  ]);
+  const [showIntake, setShowIntake] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-    const userMessage = input.trim();
-    setInput('');
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const sendMessage = async (userMessage: string) => {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
 
@@ -64,6 +66,28 @@ export default function AcquisitionStrategyPage() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || loading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    await sendMessage(userMessage);
+  };
+
+  const handleIntakeComplete = async (generatedPrompt: string) => {
+    setShowIntake(false);
+    await sendMessage(generatedPrompt);
+  };
+
+  const handleIntakeSkip = () => {
+    setShowIntake(false);
+    setMessages([{
+      role: 'assistant',
+      content: 'Welcome to Acquisition Strategy. I can help you develop comprehensive acquisition strategies, select the right contract vehicle, and structure your approach. What acquisition challenge are you working on?'
+    }]);
+  };
+
   const exportConversation = () => {
     const content = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
     const blob = new Blob([content], { type: 'text/plain' });
@@ -74,6 +98,51 @@ export default function AcquisitionStrategyPage() {
     a.click();
   };
 
+  const intakeConfig = intakeConfigs['acquisition-strategy'];
+
+  // Show intake form
+  if (showIntake && intakeConfig) {
+    return (
+      <div className="min-h-screen bg-[#0f172a]">
+        {/* Header */}
+        <header className="bg-[#1e293b] border-b border-slate-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-4">
+                <Link 
+                  href="/dashboard" 
+                  className="text-slate-400 hover:text-white transition flex items-center space-x-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="text-sm font-medium">Dashboard</span>
+                </Link>
+                <div className="h-6 w-px bg-slate-700"></div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                    <Target className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-bold text-white">Acquisition Strategy</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Intake Form */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <IntakeForm
+            config={intakeConfig}
+            onComplete={handleIntakeComplete}
+            onSkip={handleIntakeSkip}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  // Show chat interface
   return (
     <div className="min-h-screen bg-[#0f172a]">
       {/* Header */}
@@ -179,6 +248,7 @@ export default function AcquisitionStrategyPage() {
                     </div>
                   </div>
                 )}
+                <div ref={messagesEndRef} />
               </div>
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
