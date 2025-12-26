@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Download, Trash2, ChevronDown, Bot } from 'lucide-react';
+import { Send, Loader2, Download, ChevronDown, Bot, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
@@ -34,13 +34,24 @@ export default function AcquisitionChatbot() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [workspacesOpen, setWorkspacesOpen] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom on new messages
-  useEffect(() => {
+  // Check if user has scrolled up from bottom
+  const handleScroll = () => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setShowScrollButton(!isNearBottom);
+    }
+  };
+
+  // Scroll to bottom function
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -112,22 +123,22 @@ export default function AcquisitionChatbot() {
   };
 
   return (
-    <div className="bg-[#0f172a] border border-slate-700 rounded-lg overflow-hidden">
+    <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg overflow-hidden">
       {/* Header */}
       <div className="bg-[#1e293b] border-b border-slate-700 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-              <Bot className="h-5 w-5 text-cyan-400" />
+            <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
+              <Bot className="h-5 w-5 text-blue-500" />
             </div>
             <div>
               <span className="font-bold text-white">Agile Innovation Toolkit</span>
-              <span className="text-cyan-400 ml-2">AI Assistant</span>
+              <span className="text-blue-400 ml-2">AI Assistant</span>
             </div>
           </div>
           
           <div className="flex items-center space-x-3">
-            <span className="bg-cyan-500 text-white text-sm px-3 py-1 rounded-md font-medium">
+            <span className="bg-blue-600 text-white text-sm px-3 py-1 rounded-md font-medium">
               Chat
             </span>
             
@@ -135,7 +146,7 @@ export default function AcquisitionChatbot() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setWorkspacesOpen(!workspacesOpen)}
-                className="flex items-center space-x-1 text-white hover:text-cyan-400 transition"
+                className="flex items-center space-x-1 text-white hover:text-blue-400 transition"
               >
                 <span>Workspaces</span>
                 <ChevronDown className={`h-4 w-4 transition-transform ${workspacesOpen ? 'rotate-180' : ''}`} />
@@ -171,15 +182,19 @@ export default function AcquisitionChatbot() {
       </div>
 
       {/* Messages */}
-      <div className="h-96 overflow-y-auto p-4 space-y-4">
+      <div 
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
+        className="h-96 overflow-y-auto p-4 space-y-4 relative"
+      >
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.role === 'assistant' && (
-              <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                <Bot className="h-5 w-5 text-cyan-400" />
+              <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                <Bot className="h-5 w-5 text-blue-500" />
               </div>
             )}
             <div
@@ -194,7 +209,7 @@ export default function AcquisitionChatbot() {
                 <div className="mt-2 flex justify-end">
                   <button
                     onClick={downloadChat}
-                    className="text-xs text-slate-400 hover:text-cyan-400 transition flex items-center space-x-1"
+                    className="text-xs text-slate-400 hover:text-blue-400 transition flex items-center space-x-1"
                   >
                     <Download className="h-3 w-3" />
                     <span>Download</span>
@@ -207,15 +222,26 @@ export default function AcquisitionChatbot() {
         
         {loading && (
           <div className="flex justify-start">
-            <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-              <Bot className="h-5 w-5 text-cyan-400" />
+            <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+              <Bot className="h-5 w-5 text-blue-500" />
             </div>
             <div className="bg-slate-800/80 rounded-lg p-4 border border-slate-700">
-              <Loader2 className="h-5 w-5 animate-spin text-cyan-500" />
+              <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
             </div>
           </div>
         )}
         <div ref={messagesEndRef} />
+        
+        {/* Scroll to bottom button */}
+        {showScrollButton && (
+          <button
+            onClick={scrollToBottom}
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all z-10"
+            aria-label="Scroll to bottom"
+          >
+            <ArrowDown className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* Input Area */}
