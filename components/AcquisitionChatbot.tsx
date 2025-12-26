@@ -103,10 +103,22 @@ export default function AcquisitionChatbot() {
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-700">
         <div className="flex items-center gap-3">
-          {/* Robot Icon */}
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          {/* Fun Robot Icon */}
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center relative">
+            {/* Antenna */}
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1.5 bg-blue-400 rounded-full"></div>
+            {/* Robot Face */}
+            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+              {/* Head */}
+              <rect x="4" y="6" width="16" height="14" rx="2" fill="currentColor"/>
+              {/* Left Eye */}
+              <circle cx="9" cy="12" r="2" fill="#3B82F6"/>
+              <circle cx="9" cy="12" r="1" fill="white"/>
+              {/* Right Eye */}
+              <circle cx="15" cy="12" r="2" fill="#3B82F6"/>
+              <circle cx="15" cy="12" r="1" fill="white"/>
+              {/* Mouth */}
+              <rect x="8" y="16" width="8" height="1.5" rx="0.5" fill="#3B82F6"/>
             </svg>
           </div>
           <h3 className="font-semibold text-white">AI Assistant</h3>
@@ -215,7 +227,8 @@ export default function AcquisitionChatbot() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about federal acquisition..."
             className="flex-1 bg-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-          />
+          >
+          </input>
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
