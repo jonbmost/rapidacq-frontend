@@ -103,6 +103,12 @@ export default function AcquisitionChatbot() {
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-700">
         <div className="flex items-center gap-3">
+          {/* Robot Icon */}
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
           <h3 className="font-semibold text-white">AI Assistant</h3>
           <div className="relative">
             <button
@@ -186,15 +192,15 @@ export default function AcquisitionChatbot() {
         )}
         <div ref={messagesEndRef} />
 
-        {/* Scroll to bottom button - inside messages container, fixed to bottom */}
+        {/* Scroll to bottom button - smaller like Claude */}
         {showScrollButton && (
           <button
             onClick={scrollToBottom}
-            className="sticky bottom-2 left-1/2 -translate-x-1/2 bg-gray-600/70 hover:bg-gray-500/80 text-white rounded-full p-2 shadow-lg backdrop-blur-sm border border-gray-500/50 transition-all"
+            className="sticky bottom-2 left-1/2 -translate-x-1/2 bg-gray-600/80 hover:bg-gray-500 text-gray-300 rounded-full p-1.5 shadow-md backdrop-blur-sm border border-gray-500/50 transition-all"
             title="Scroll to bottom"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </button>
         )}
