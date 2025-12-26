@@ -21,6 +21,7 @@ export default function DocumentAnalysisPage() {
   const [loading, setLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
+  const [fileLoading, setFileLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,26 +34,53 @@ export default function DocumentAnalysisPage() {
     scrollToBottom();
   }, [messages]);
 
+  const extractPdfText = async (file: File): Promise<string> => {
+    const pdfjsLib = await import('pdfjs-dist');
+    
+    // Set worker source
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: any) => item.str)
+        .join(' ');
+      fullText += `\n--- Page ${i} ---\n${pageText}`;
+    }
+    
+    return fullText;
+  };
+
   const handleFileUpload = async (file: File) => {
     setUploadedFile(file);
+    setFileLoading(true);
+    setFileContent('');
     
-    // Read file content
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const text = e.target?.result as string;
-      setFileContent(text);
-    };
-    
-    if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
-      reader.readAsText(file);
-    } else if (file.type === 'application/pdf') {
-      // For PDFs, we'll send a message that a PDF was uploaded
-      setFileContent(`[PDF Document: ${file.name}]`);
-    } else if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-      setFileContent(`[Word Document: ${file.name}]`);
-    } else {
-      // Try to read as text
-      reader.readAsText(file);
+    try {
+      if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        const text = await extractPdfText(file);
+        setFileContent(text);
+      } else if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        const text = await file.text();
+        setFileContent(text);
+      } else if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        // For DOCX, we'd need mammoth.js - for now, notify user
+        setFileContent(`[Word Document: ${file.name} - Please save as PDF or copy/paste text for full analysis]`);
+      } else {
+        // Try to read as text
+        const text = await file.text();
+        setFileContent(text);
+      }
+    } catch (error) {
+      console.error('Error reading file:', error);
+      setFileContent(`[Error reading file: ${file.name}. Please try copy/pasting the text instead.]`);
+    } finally {
+      setFileLoading(false);
     }
   };
 
@@ -93,8 +121,12 @@ export default function DocumentAnalysisPage() {
   const sendMessage = async (userMessage: string) => {
     // Include file content in the message if available
     let fullMessage = userMessage;
-    if (fileContent && !messages.some(m => m.content.includes(fileContent))) {
-      fullMessage = `${userMessage}\n\n--- DOCUMENT CONTENT ---\n${fileContent.substring(0, 50000)}`; // Limit to 50k chars
+    if (fileContent && !messages.some(m => m.content.includes('--- DOCUMENT CONTENT ---'))) {
+      const truncatedContent = fileContent.substring(0, 80000); // Limit to ~80k chars
+      fullMessage = `${userMessage}\n\n--- DOCUMENT CONTENT ---\n${truncatedContent}`;
+      if (fileContent.length > 80000) {
+        fullMessage += `\n\n[Note: Document truncated. Original length: ${fileContent.length} characters]`;
+      }
     }
 
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
@@ -132,7 +164,6 @@ export default function DocumentAnalysisPage() {
 
   const handleIntakeComplete = async (generatedPrompt: string) => {
     setShowIntake(false);
-    // Don't send automatically - wait for document upload
     setMessages([{ 
       role: 'assistant', 
       content: `Great! I understand you want to ${generatedPrompt.includes('compliance') ? 'check compliance' : generatedPrompt.includes('risk') ? 'identify risks' : 'analyze'} a document. Please upload your document or paste the text below, and I'll provide a thorough analysis.` 
@@ -235,7 +266,12 @@ export default function DocumentAnalysisPage() {
                 className="hidden"
               />
               
-              {uploadedFile ? (
+              {fileLoading ? (
+                <div className="text-center py-4">
+                  <Loader2 className="h-8 w-8 text-blue-500 mx-auto mb-3 animate-spin" />
+                  <p className="text-sm text-white">Extracting text...</p>
+                </div>
+              ) : uploadedFile ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -254,9 +290,16 @@ export default function DocumentAnalysisPage() {
                   <p className="text-xs text-slate-400">
                     {(uploadedFile.size / 1024).toFixed(1)} KB
                   </p>
-                  <p className="text-xs text-green-400">
-                    ✓ Ready for analysis
-                  </p>
+                  {fileContent && !fileContent.startsWith('[') && (
+                    <p className="text-xs text-green-400">
+                      ✓ {fileContent.length.toLocaleString()} chars extracted
+                    </p>
+                  )}
+                  {fileContent && fileContent.startsWith('[') && (
+                    <p className="text-xs text-yellow-400">
+                      ⚠ {fileContent}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div 
@@ -269,7 +312,7 @@ export default function DocumentAnalysisPage() {
                     Drag & drop or click to browse
                   </p>
                   <p className="text-xs text-slate-500 mt-2">
-                    .txt, .md, .pdf, .docx
+                    .pdf, .txt, .md
                   </p>
                 </div>
               )}
@@ -314,10 +357,10 @@ export default function DocumentAnalysisPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
-                {uploadedFile && (
-                  <div className="mb-3 flex items-center gap-2 text-xs text-slate-400">
+                {uploadedFile && fileContent && !fileContent.startsWith('[') && (
+                  <div className="mb-3 flex items-center gap-2 text-xs text-green-400">
                     <FileText className="h-3 w-3" />
-                    <span>Analyzing: {uploadedFile.name}</span>
+                    <span>Ready to analyze: {uploadedFile.name}</span>
                   </div>
                 )}
                 <div className="flex space-x-3">
@@ -325,7 +368,7 @@ export default function DocumentAnalysisPage() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder={uploadedFile ? "Ask a question about the document..." : "Paste document text or upload a file..."}
+                    placeholder={uploadedFile && fileContent ? "Ask a question about the document..." : "Upload a document or paste text here..."}
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
