@@ -54,9 +54,9 @@ export default function Home() {
             </h1>
             
             <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
-              The Agile Innovation Toolkit (AIT) empowers organizations to rapidly develop 
-              comprehensive solutions including business process redesign, acquisition strategy 
-              development, requirement documents, and more.
+              Agile Innovation Toolkit (AIT) empowers government teams to move faster from idea to award. By combining acquisition strategy, market intelligence, requirements development, evaluation design, and policy guidance in one platform, AIT helps teams drive innovation while staying 
+              compliant, disciplined, and mission-focused. 
+              
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
