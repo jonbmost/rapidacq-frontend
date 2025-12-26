@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FileSearch, ArrowLeft, Send, Loader2, Download, SearchCheck } from 'lucide-react';
+import { FileSearch, ArrowLeft, Send, Loader2, Download, SearchCheck, Upload, X, FileText } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
 import IntakeForm from '@/app/components/IntakeForm';
 import { intakeConfigs } from '@/app/config/intakeQuestions';
@@ -19,7 +19,11 @@ export default function DocumentAnalysisPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<string>('');
+  const [dragActive, setDragActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,7 +33,70 @@ export default function DocumentAnalysisPage() {
     scrollToBottom();
   }, [messages]);
 
+  const handleFileUpload = async (file: File) => {
+    setUploadedFile(file);
+    
+    // Read file content
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const text = e.target?.result as string;
+      setFileContent(text);
+    };
+    
+    if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+      reader.readAsText(file);
+    } else if (file.type === 'application/pdf') {
+      // For PDFs, we'll send a message that a PDF was uploaded
+      setFileContent(`[PDF Document: ${file.name}]`);
+    } else if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      setFileContent(`[Word Document: ${file.name}]`);
+    } else {
+      // Try to read as text
+      reader.readAsText(file);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileUpload(e.target.files[0]);
+    }
+  };
+
+  const removeFile = () => {
+    setUploadedFile(null);
+    setFileContent('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const sendMessage = async (userMessage: string) => {
+    // Include file content in the message if available
+    let fullMessage = userMessage;
+    if (fileContent && !messages.some(m => m.content.includes(fileContent))) {
+      fullMessage = `${userMessage}\n\n--- DOCUMENT CONTENT ---\n${fileContent.substring(0, 50000)}`; // Limit to 50k chars
+    }
+
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
 
@@ -38,7 +105,7 @@ export default function DocumentAnalysisPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: `[Document Analysis Context] ${userMessage}`,
+          message: `[Document Analysis Context] ${fullMessage}`,
           history: messages
         }),
       });
@@ -65,12 +132,16 @@ export default function DocumentAnalysisPage() {
 
   const handleIntakeComplete = async (generatedPrompt: string) => {
     setShowIntake(false);
-    await sendMessage(generatedPrompt);
+    // Don't send automatically - wait for document upload
+    setMessages([{ 
+      role: 'assistant', 
+      content: `Great! I understand you want to ${generatedPrompt.includes('compliance') ? 'check compliance' : generatedPrompt.includes('risk') ? 'identify risks' : 'analyze'} a document. Please upload your document or paste the text below, and I'll provide a thorough analysis.` 
+    }]);
   };
 
   const handleIntakeSkip = () => {
     setShowIntake(false);
-    setMessages([{ role: 'assistant', content: 'Welcome to Document Analysis. I can help you review solicitations, contracts, proposals, and other acquisition documents. Paste the text you want analyzed or describe the document, and I\'ll help identify issues, risks, and opportunities.' }]);
+    setMessages([{ role: 'assistant', content: 'Welcome to Document Analysis. I can help you review solicitations, contracts, proposals, and other acquisition documents. Upload a document or paste the text you want analyzed, and I\'ll help identify issues, risks, and opportunities.' }]);
   };
 
   const exportConversation = () => {
@@ -145,8 +216,67 @@ export default function DocumentAnalysisPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+          <div className="lg:col-span-1 space-y-6">
+            {/* File Upload Area */}
+            <div 
+              className={`bg-slate-800/50 backdrop-blur-sm border-2 border-dashed rounded-lg p-6 transition-colors ${
+                dragActive ? 'border-blue-500 bg-blue-500/10' : 'border-slate-600 hover:border-slate-500'
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileInput}
+                accept=".txt,.md,.pdf,.docx,.doc"
+                className="hidden"
+              />
+              
+              {uploadedFile ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="h-5 w-5 text-blue-500" />
+                      <span className="text-sm text-white font-medium truncate max-w-[150px]">
+                        {uploadedFile.name}
+                      </span>
+                    </div>
+                    <button
+                      onClick={removeFile}
+                      className="text-slate-400 hover:text-red-400 transition"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    {(uploadedFile.size / 1024).toFixed(1)} KB
+                  </p>
+                  <p className="text-xs text-green-400">
+                    ✓ Ready for analysis
+                  </p>
+                </div>
+              ) : (
+                <div 
+                  className="text-center cursor-pointer"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-8 w-8 text-slate-500 mx-auto mb-3" />
+                  <p className="text-sm text-white font-medium">Upload Document</p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Drag & drop or click to browse
+                  </p>
+                  <p className="text-xs text-slate-500 mt-2">
+                    .txt, .md, .pdf, .docx
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Analysis Types */}
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="font-bold text-white mb-4 flex items-center">
                 <SearchCheck className="h-5 w-5 text-blue-500 mr-2" />
                 Analysis Types
@@ -184,12 +314,18 @@ export default function DocumentAnalysisPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
+                {uploadedFile && (
+                  <div className="mb-3 flex items-center gap-2 text-xs text-slate-400">
+                    <FileText className="h-3 w-3" />
+                    <span>Analyzing: {uploadedFile.name}</span>
+                  </div>
+                )}
                 <div className="flex space-x-3">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Paste document text or describe what you need analyzed..."
+                    placeholder={uploadedFile ? "Ask a question about the document..." : "Paste document text or upload a file..."}
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
