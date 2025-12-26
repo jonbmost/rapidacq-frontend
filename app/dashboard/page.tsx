@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Wrench, MessageSquare, Target, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book } from 'lucide-react';
+import { LogOut, Wrench, Target, FileText, TrendingUp, CheckCircle, FileCheck, Users, Shield, Presentation, Search, Book } from 'lucide-react';
 import AcquisitionChatbot from '@/components/AcquisitionChatbot';
 
 export default function DashboardPage() {
@@ -139,6 +139,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* AI Assistant Chatbot - Now right after overview */}
+        <div className="mb-8">
+          <AcquisitionChatbot />
+        </div>
+
         {/* Services Grid */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-white mb-4">Acquisition Intelligence Tools</h2>
@@ -168,11 +173,6 @@ export default function DashboardPage() {
               );
             })}
           </div>
-        </div>
-
-        {/* Chatbot */}
-        <div className="mb-8">
-          <AcquisitionChatbot />
         </div>
       </main>
     </div>
