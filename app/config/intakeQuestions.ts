@@ -541,3 +541,111 @@ export const intakeConfigs: Record<string, ToolIntakeConfig> = {
     }
   }
 };
+
+  'regs-policy': {
+    title: 'What regulation or policy do you need help with?',
+    description: 'This helps me provide relevant guidance.',
+    questions: [
+      {
+        id: 'topic',
+        label: 'What topic or regulation are you asking about?',
+        type: 'textarea',
+        placeholder: 'e.g., FAR Part 15 negotiations, DFARS cybersecurity, commercial item determination...',
+        required: true
+      },
+      {
+        id: 'context',
+        label: 'What\'s your situation?',
+        type: 'select',
+        options: [
+          { value: 'understanding', label: 'Need to understand a regulation' },
+          { value: 'applying', label: 'Applying regulation to specific situation' },
+          { value: 'compliance', label: 'Checking compliance requirements' },
+          { value: 'comparing', label: 'Comparing different approaches' },
+          { value: 'recent', label: 'Looking for recent changes/updates' }
+        ],
+        required: true
+      },
+      {
+        id: 'agency',
+        label: 'Which agency regulations apply?',
+        type: 'select',
+        options: [
+          { value: 'far', label: 'FAR (all agencies)' },
+          { value: 'dfars', label: 'DFARS (DoD)' },
+          { value: 'gsam', label: 'GSAM (GSA)' },
+          { value: 'aidar', label: 'AIDAR (USAID)' },
+          { value: 'dosar', label: 'DOSAR (State Dept)' },
+          { value: 'multiple', label: 'Multiple/Not sure' }
+        ]
+      }
+    ],
+    generatePrompt: (answers) => {
+      let prompt = `I need help understanding federal acquisition regulations:\n\n`;
+      prompt += `**Topic:** ${answers.topic}\n`;
+      prompt += `**Context:** ${answers.context}\n`;
+      
+      if (answers.agency) {
+        prompt += `**Applicable Regulations:** ${answers.agency}\n`;
+      }
+      
+      prompt += `\nPlease explain the relevant regulations, any key requirements, and practical guidance for applying them.`;
+      
+      return prompt;
+    }
+  },
+
+  'document-analysis': {
+    title: 'What document do you need analyzed?',
+    description: 'Upload a document or describe what you need reviewed.',
+    questions: [
+      {
+        id: 'docType',
+        label: 'What type of document is this?',
+        type: 'select',
+        options: [
+          { value: 'solicitation', label: 'Solicitation (RFP/RFQ/RFI)' },
+          { value: 'contract', label: 'Contract or modification' },
+          { value: 'proposal', label: 'Proposal or quote' },
+          { value: 'requirements', label: 'Requirements document (SOW/PWS/SOO)' },
+          { value: 'policy', label: 'Policy or guidance' },
+          { value: 'other', label: 'Other document' }
+        ],
+        required: true
+      },
+      {
+        id: 'goal',
+        label: 'What do you want me to analyze?',
+        type: 'select',
+        options: [
+          { value: 'compliance', label: 'Check for compliance issues' },
+          { value: 'risk', label: 'Identify risks or concerns' },
+          { value: 'summary', label: 'Summarize key points' },
+          { value: 'improve', label: 'Suggest improvements' },
+          { value: 'compare', label: 'Compare against standards' },
+          { value: 'general', label: 'General review' }
+        ],
+        required: true
+      },
+      {
+        id: 'focus',
+        label: 'Any specific areas to focus on?',
+        type: 'textarea',
+        placeholder: 'e.g., pricing terms, IP rights, security requirements, evaluation criteria...'
+      }
+    ],
+    generatePrompt: (answers) => {
+      let prompt = `I need help analyzing a document:\n\n`;
+      prompt += `**Document Type:** ${answers.docType}\n`;
+      prompt += `**Analysis Goal:** ${answers.goal}\n`;
+      
+      if (answers.focus) {
+        prompt += `**Focus Areas:** ${answers.focus}\n`;
+      }
+      
+      prompt += `\nPlease upload your document or paste the relevant text, and I'll provide a thorough analysis.`;
+      
+      return prompt;
+    }
+  }
+};
