@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { BookOpen, ArrowLeft, Send, Loader2, Download, ScrollText } from 'lucide-react';
+import { BookOpen, ArrowLeft, Send, Loader2, Download, Scale } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
 import IntakeForm from '@/app/components/IntakeForm';
+import SuggestedQuestions from '@/app/components/SuggestedQuestions';
 import { intakeConfigs } from '@/app/config/intakeQuestions';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
@@ -19,6 +20,8 @@ export default function RegsPolicyPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -32,6 +35,8 @@ export default function RegsPolicyPage() {
   const sendMessage = async (userMessage: string) => {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
+    setSuggestionsLoading(true);
+    setSuggestedQuestions([]);
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/chat`, {
@@ -39,7 +44,8 @@ export default function RegsPolicyPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: `[Regs Policy Context] ${userMessage}`,
-          history: messages
+          history: messages,
+          includeSuggestions: true
         }),
       });
 
@@ -47,11 +53,15 @@ export default function RegsPolicyPage() {
       const data = await response.json();
       
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      if (data.suggestedQuestions?.length > 0) {
+        setSuggestedQuestions(data.suggestedQuestions);
+      }
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again.' }]);
     } finally {
       setLoading(false);
+      setSuggestionsLoading(false);
     }
   };
 
@@ -70,7 +80,11 @@ export default function RegsPolicyPage() {
 
   const handleIntakeSkip = () => {
     setShowIntake(false);
-    setMessages([{ role: 'assistant', content: 'Welcome to Regs & Policy. I can help you navigate FAR, DFARS, agency supplements, and acquisition policy. I can also search for recent executive orders, policy memos, and regulatory updates. What regulation or policy question do you have?' }]);
+    setMessages([{ role: 'assistant', content: 'Welcome to Regs & Policy. I can help you understand FAR, DFARS, agency supplements, and policy guidance. I can also search for recent policy updates and executive orders. What regulation or policy do you need help with?' }]);
+  };
+
+  const handleSuggestionSelect = (question: string) => {
+    setInput(question);
   };
 
   const exportConversation = () => {
@@ -145,20 +159,22 @@ export default function RegsPolicyPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+          <div className="lg:col-span-1 space-y-6">
+            {(suggestedQuestions.length > 0 || suggestionsLoading) && (
+              <SuggestedQuestions questions={suggestedQuestions} onSelect={handleSuggestionSelect} loading={suggestionsLoading} />
+            )}
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="font-bold text-white mb-4 flex items-center">
-                <ScrollText className="h-5 w-5 text-blue-500 mr-2" />
+                <Scale className="h-5 w-5 text-blue-500 mr-2" />
                 Regulation Sources
               </h3>
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>FAR (all agencies)</span></li>
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>DFARS (DoD)</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>GSAM/GSAR (GSA)</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>GSAM (GSA)</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>AIDAR (USAID)</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>OMB Circulars</span></li>
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Executive Orders</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>OMB Memoranda</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>OFPP Guidance</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Agency supplements</span></li>
               </ul>
             </div>
           </div>
@@ -185,14 +201,7 @@ export default function RegsPolicyPage() {
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
                 <div className="flex space-x-3">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about regulations, policy, or recent guidance..."
-                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={loading}
-                  />
+                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about regulations or policy..." className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled={loading} />
                   <button type="submit" disabled={loading || !input.trim()} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2">
                     <Send className="h-4 w-4" />
                   </button>

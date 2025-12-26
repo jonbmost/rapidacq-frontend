@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FileSearch, ArrowLeft, Send, Loader2, Download, SearchCheck, Upload, X, FileText } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
 import IntakeForm from '@/app/components/IntakeForm';
+import SuggestedQuestions from '@/app/components/SuggestedQuestions';
 import { intakeConfigs } from '@/app/config/intakeQuestions';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
@@ -19,6 +20,8 @@ export default function DocumentAnalysisPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
   const [fileLoading, setFileLoading] = useState(false);
@@ -42,7 +45,6 @@ export default function DocumentAnalysisPage() {
     setFileError('');
     
     try {
-      // Use backend for PDF extraction
       if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
         const formData = new FormData();
         formData.append('file', file);
@@ -63,7 +65,6 @@ export default function DocumentAnalysisPage() {
         const text = await file.text();
         setFileContent(text);
       } else {
-        // Try to read as text
         const text = await file.text();
         setFileContent(text);
       }
@@ -111,10 +112,9 @@ export default function DocumentAnalysisPage() {
   };
 
   const sendMessage = async (userMessage: string) => {
-    // Include file content in the message if available
     let fullMessage = userMessage;
     if (fileContent && !messages.some(m => m.content.includes('--- DOCUMENT CONTENT ---'))) {
-      const truncatedContent = fileContent.substring(0, 80000); // Limit to ~80k chars
+      const truncatedContent = fileContent.substring(0, 80000);
       fullMessage = `${userMessage}\n\n--- DOCUMENT CONTENT ---\n${truncatedContent}`;
       if (fileContent.length > 80000) {
         fullMessage += `\n\n[Note: Document truncated. Original length: ${fileContent.length} characters]`;
@@ -123,6 +123,8 @@ export default function DocumentAnalysisPage() {
 
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
+    setSuggestionsLoading(true);
+    setSuggestedQuestions([]);
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/chat`, {
@@ -130,7 +132,8 @@ export default function DocumentAnalysisPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: `[Document Analysis Context] ${fullMessage}`,
-          history: messages
+          history: messages,
+          includeSuggestions: true
         }),
       });
 
@@ -138,11 +141,15 @@ export default function DocumentAnalysisPage() {
       const data = await response.json();
       
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      if (data.suggestedQuestions?.length > 0) {
+        setSuggestedQuestions(data.suggestedQuestions);
+      }
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again.' }]);
     } finally {
       setLoading(false);
+      setSuggestionsLoading(false);
     }
   };
 
@@ -165,6 +172,10 @@ export default function DocumentAnalysisPage() {
   const handleIntakeSkip = () => {
     setShowIntake(false);
     setMessages([{ role: 'assistant', content: 'Welcome to Document Analysis. I can help you review solicitations, contracts, proposals, and other acquisition documents. Upload a document or paste the text you want analyzed, and I\'ll help identify issues, risks, and opportunities.' }]);
+  };
+
+  const handleSuggestionSelect = (question: string) => {
+    setInput(question);
   };
 
   const exportConversation = () => {
@@ -250,13 +261,7 @@ export default function DocumentAnalysisPage() {
               onDragOver={handleDrag}
               onDrop={handleDrop}
             >
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileInput}
-                accept=".txt,.md,.pdf"
-                className="hidden"
-              />
+              <input ref={fileInputRef} type="file" onChange={handleFileInput} accept=".txt,.md,.pdf" className="hidden" />
               
               {fileLoading ? (
                 <div className="text-center py-4">
@@ -268,47 +273,30 @@ export default function DocumentAnalysisPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <FileText className="h-5 w-5 text-blue-500" />
-                      <span className="text-sm text-white font-medium truncate max-w-[150px]">
-                        {uploadedFile.name}
-                      </span>
+                      <span className="text-sm text-white font-medium truncate max-w-[150px]">{uploadedFile.name}</span>
                     </div>
-                    <button
-                      onClick={removeFile}
-                      className="text-slate-400 hover:text-red-400 transition"
-                    >
+                    <button onClick={removeFile} className="text-slate-400 hover:text-red-400 transition">
                       <X className="h-4 w-4" />
                     </button>
                   </div>
-                  <p className="text-xs text-slate-400">
-                    {(uploadedFile.size / 1024).toFixed(1)} KB
-                  </p>
-                  {fileContent && (
-                    <p className="text-xs text-green-400">
-                      ✓ {fileContent.length.toLocaleString()} chars extracted
-                    </p>
-                  )}
-                  {fileError && (
-                    <p className="text-xs text-red-400">
-                      ⚠ {fileError}
-                    </p>
-                  )}
+                  <p className="text-xs text-slate-400">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
+                  {fileContent && <p className="text-xs text-green-400">✓ {fileContent.length.toLocaleString()} chars extracted</p>}
+                  {fileError && <p className="text-xs text-red-400">⚠ {fileError}</p>}
                 </div>
               ) : (
-                <div 
-                  className="text-center cursor-pointer"
-                  onClick={() => fileInputRef.current?.click()}
-                >
+                <div className="text-center cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                   <Upload className="h-8 w-8 text-slate-500 mx-auto mb-3" />
                   <p className="text-sm text-white font-medium">Upload Document</p>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Drag & drop or click to browse
-                  </p>
-                  <p className="text-xs text-slate-500 mt-2">
-                    .pdf, .txt, .md
-                  </p>
+                  <p className="text-xs text-slate-400 mt-1">Drag & drop or click</p>
+                  <p className="text-xs text-slate-500 mt-2">.pdf, .txt, .md</p>
                 </div>
               )}
             </div>
+
+            {/* Suggested Questions */}
+            {(suggestedQuestions.length > 0 || suggestionsLoading) && (
+              <SuggestedQuestions questions={suggestedQuestions} onSelect={handleSuggestionSelect} loading={suggestionsLoading} />
+            )}
 
             {/* Analysis Types */}
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
@@ -322,8 +310,6 @@ export default function DocumentAnalysisPage() {
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Compliance checking</span></li>
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Risk identification</span></li>
                 <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Requirements clarity</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Terms comparison</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Gap analysis</span></li>
               </ul>
             </div>
           </div>
@@ -356,14 +342,7 @@ export default function DocumentAnalysisPage() {
                   </div>
                 )}
                 <div className="flex space-x-3">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder={uploadedFile && fileContent ? "Ask a question about the document..." : "Upload a document or paste text here..."}
-                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={loading}
-                  />
+                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder={uploadedFile && fileContent ? "Ask about the document..." : "Upload a document or paste text..."} className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled={loading} />
                   <button type="submit" disabled={loading || !input.trim()} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2">
                     <Send className="h-4 w-4" />
                   </button>

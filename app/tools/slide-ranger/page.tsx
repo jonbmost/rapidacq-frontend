@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Presentation, ArrowLeft, Send, Loader2, Download, Layout } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
 import IntakeForm from '@/app/components/IntakeForm';
+import SuggestedQuestions from '@/app/components/SuggestedQuestions';
 import { intakeConfigs } from '@/app/config/intakeQuestions';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://acquisition-assistant-266001336704.us-central1.run.app';
@@ -19,6 +20,8 @@ export default function SlideRangerPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -32,6 +35,8 @@ export default function SlideRangerPage() {
   const sendMessage = async (userMessage: string) => {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setLoading(true);
+    setSuggestionsLoading(true);
+    setSuggestedQuestions([]);
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/chat`, {
@@ -39,7 +44,8 @@ export default function SlideRangerPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: `[Slide Ranger Context] ${userMessage}`,
-          history: messages
+          history: messages,
+          includeSuggestions: true
         }),
       });
 
@@ -47,11 +53,15 @@ export default function SlideRangerPage() {
       const data = await response.json();
       
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      if (data.suggestedQuestions?.length > 0) {
+        setSuggestedQuestions(data.suggestedQuestions);
+      }
     } catch (error) {
       console.error('Chat error:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'I apologize, but I encountered an error. Please try again.' }]);
     } finally {
       setLoading(false);
+      setSuggestionsLoading(false);
     }
   };
 
@@ -70,7 +80,11 @@ export default function SlideRangerPage() {
 
   const handleIntakeSkip = () => {
     setShowIntake(false);
-    setMessages([{ role: 'assistant', content: 'Welcome to Slide Ranger. I can help you create government-style presentations including acquisition briefings, capability reviews, and decision briefings. What presentation do you need?' }]);
+    setMessages([{ role: 'assistant', content: 'Welcome to Slide Ranger. I can help you create compelling acquisition briefings and presentations for leadership, review boards, and stakeholders. What presentation do you need?' }]);
+  };
+
+  const handleSuggestionSelect = (question: string) => {
+    setInput(question);
   };
 
   const exportConversation = () => {
@@ -145,20 +159,22 @@ export default function SlideRangerPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
+          <div className="lg:col-span-1 space-y-6">
+            {(suggestedQuestions.length > 0 || suggestionsLoading) && (
+              <SuggestedQuestions questions={suggestedQuestions} onSelect={handleSuggestionSelect} loading={suggestionsLoading} />
+            )}
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6">
               <h3 className="font-bold text-white mb-4 flex items-center">
                 <Layout className="h-5 w-5 text-blue-500 mr-2" />
-                Presentation Types
+                Briefing Types
               </h3>
               <ul className="space-y-3 text-sm text-slate-400">
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Acquisition strategy briefings</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Program review decks</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Milestone decision briefs</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Market research summaries</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Capability overviews</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Training presentations</span></li>
-                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Status update slides</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Strategy briefings</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Decision briefs</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Milestone reviews</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Status updates</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Training materials</span></li>
+                <li className="flex items-start"><span className="text-blue-500 mr-2 mt-0.5">•</span><span>Executive summaries</span></li>
               </ul>
             </div>
           </div>
@@ -185,14 +201,7 @@ export default function SlideRangerPage() {
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
                 <div className="flex space-x-3">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Describe your presentation needs..."
-                    className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={loading}
-                  />
+                  <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Describe your presentation needs..." className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" disabled={loading} />
                   <button type="submit" disabled={loading || !input.trim()} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-slate-700 disabled:cursor-not-allowed transition flex items-center space-x-2">
                     <Send className="h-4 w-4" />
                   </button>
