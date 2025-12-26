@@ -14,7 +14,7 @@ const services = [
   { name: 'Authority Assessment', href: '/tools/authority-assessment' },
   { name: 'Requirement Documents', href: '/tools/requirement-documents' },
   { name: 'Evaluation Criteria', href: '/tools/evaluation-criteria' },
-  { name: 'Compliance Checker', href: '/tools/compliance-checker' },
+  { name: 'Document Analysis', href: '/tools/document-analysis' },
   { name: 'Regs & Policy', href: '/tools/regs-policy' },
   { name: 'Slide Ranger', href: '/tools/slide-ranger' },
   { name: 'SOP Creation', href: '/tools/sop-creation' },
@@ -105,19 +105,13 @@ export default function AcquisitionChatbot() {
         <div className="flex items-center gap-3">
           {/* Fun Robot Icon */}
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center relative">
-            {/* Antenna */}
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1.5 bg-blue-400 rounded-full"></div>
-            {/* Robot Face */}
             <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-              {/* Head */}
               <rect x="4" y="6" width="16" height="14" rx="2" fill="currentColor"/>
-              {/* Left Eye */}
               <circle cx="9" cy="12" r="2" fill="#3B82F6"/>
               <circle cx="9" cy="12" r="1" fill="white"/>
-              {/* Right Eye */}
               <circle cx="15" cy="12" r="2" fill="#3B82F6"/>
               <circle cx="15" cy="12" r="1" fill="white"/>
-              {/* Mouth */}
               <rect x="8" y="16" width="8" height="1.5" rx="0.5" fill="#3B82F6"/>
             </svg>
           </div>
@@ -204,7 +198,6 @@ export default function AcquisitionChatbot() {
         )}
         <div ref={messagesEndRef} />
 
-        {/* Scroll to bottom button - smaller like Claude */}
         {showScrollButton && (
           <button
             onClick={scrollToBottom}
@@ -227,8 +220,7 @@ export default function AcquisitionChatbot() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about federal acquisition..."
             className="flex-1 bg-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-          >
-          </input>
+          />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
