@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FileSearch, ArrowLeft, Send, Loader2, Download, ScanSearch } from 'lucide-react';
+import { FileSearch, ArrowLeft, Send, Loader2, Download, SearchCheck } from 'lucide-react';
 import DownloadButtons from '@/app/components/DownloadButtons';
 import IntakeForm from '@/app/components/IntakeForm';
 import { intakeConfigs } from '@/app/config/intakeQuestions';
@@ -148,7 +148,7 @@ export default function DocumentAnalysisPage() {
           <div className="lg:col-span-1">
             <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-6 sticky top-8">
               <h3 className="font-bold text-white mb-4 flex items-center">
-                <ScanSearch className="h-5 w-5 text-blue-500 mr-2" />
+                <SearchCheck className="h-5 w-5 text-blue-500 mr-2" />
                 Analysis Types
               </h3>
               <ul className="space-y-3 text-sm text-slate-400">
