@@ -539,8 +539,7 @@ export const intakeConfigs: Record<string, ToolIntakeConfig> = {
       
       return prompt;
     }
-  }
-};
+  },
 
   'regs-policy': {
     title: 'What regulation or policy do you need help with?',
@@ -555,7 +554,7 @@ export const intakeConfigs: Record<string, ToolIntakeConfig> = {
       },
       {
         id: 'context',
-        label: 'What\'s your situation?',
+        label: "What's your situation?",
         type: 'select',
         options: [
           { value: 'understanding', label: 'Need to understand a regulation' },
