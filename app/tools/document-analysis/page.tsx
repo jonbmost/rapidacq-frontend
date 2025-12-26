@@ -40,12 +40,19 @@ export default function DocumentAnalysisPage() {
     }
     
     if (fileType === 'application/pdf') {
-      // Use pdf.js via CDN
-      const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+      // Use pdf.js with legacy build that has worker bundled
+      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+      
+      // Use fake worker to avoid CORS issues
+      pdfjsLib.GlobalWorkerOptions.workerSrc = '';
       
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({ 
+        data: arrayBuffer,
+        useWorkerFetch: false,
+        isEvalSupported: false,
+        useSystemFonts: true
+      }).promise;
       
       let fullText = '';
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -163,7 +170,7 @@ export default function DocumentAnalysisPage() {
         },
         body: JSON.stringify({
           message: contextMessage,
-          history: messages.filter(m => !m.content.startsWith('📄 Uploaded')).slice(-10) // Keep last 10 messages, exclude upload notifications
+          history: messages.filter(m => !m.content.startsWith('📄 Uploaded')).slice(-10)
         }),
       });
 
