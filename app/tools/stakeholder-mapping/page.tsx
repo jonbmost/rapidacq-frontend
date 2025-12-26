@@ -98,8 +98,9 @@ export default function StakeholderMappingPage() {
                 </div>
               </div>
             </div>
-              <DownloadButtons messages={messages} toolContext="stakeholder-mapping" />
+
             <button
+            <DownloadButtons messages={messages} toolContext="stakeholder-mapping" />
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
             >
@@ -198,7 +199,7 @@ export default function StakeholderMappingPage() {
                     className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={loading}
                   />
-              <DownloadButtons messages={messages} toolContext="stakeholder-mapping" />
+
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
