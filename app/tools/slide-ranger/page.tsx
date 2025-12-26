@@ -98,9 +98,8 @@ export default function SlideRangerPage() {
                 </div>
               </div>
             </div>
-
+              <DownloadButtons messages={messages} toolContext="slide-ranger" />
             <button
-            <DownloadButtons messages={messages} toolContext="slide-ranger" />
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
             >

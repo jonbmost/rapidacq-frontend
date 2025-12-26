@@ -98,9 +98,8 @@ export default function RequirementDocumentsPage() {
                 </div>
               </div>
             </div>
-
+              <DownloadButtons messages={messages} toolContext="requirement-documents" />
             <button
-            <DownloadButtons messages={messages} toolContext="requirement-documents" />
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
             >

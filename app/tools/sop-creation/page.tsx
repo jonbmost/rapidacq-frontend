@@ -98,9 +98,8 @@ export default function SOPCreationPage() {
                 </div>
               </div>
             </div>
-
+              <DownloadButtons messages={messages} toolContext="sop-creation" />
             <button
-            <DownloadButtons messages={messages} toolContext="sop-creation" />
               onClick={exportConversation}
               className="flex items-center space-x-2 text-slate-400 hover:text-white transition"
             >
