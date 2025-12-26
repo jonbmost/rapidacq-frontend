@@ -22,6 +22,7 @@ export default function DocumentAnalysisPage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
   const [fileLoading, setFileLoading] = useState(false);
+  const [fileError, setFileError] = useState<string>('');
   const [dragActive, setDragActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,51 +35,41 @@ export default function DocumentAnalysisPage() {
     scrollToBottom();
   }, [messages]);
 
-  const extractPdfText = async (file: File): Promise<string> => {
-    const pdfjsLib = await import('pdfjs-dist');
-    
-    // Set worker source
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-    
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    
-    let fullText = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      fullText += `\n--- Page ${i} ---\n${pageText}`;
-    }
-    
-    return fullText;
-  };
-
   const handleFileUpload = async (file: File) => {
     setUploadedFile(file);
     setFileLoading(true);
     setFileContent('');
+    setFileError('');
     
     try {
+      // Use backend for PDF extraction
       if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        const text = await extractPdfText(file);
-        setFileContent(text);
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch(`${BACKEND_URL}/api/upload/extract-text`, {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to extract text');
+        }
+        
+        const data = await response.json();
+        setFileContent(data.text);
       } else if (file.type === 'text/plain' || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
         const text = await file.text();
         setFileContent(text);
-      } else if (file.name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        // For DOCX, we'd need mammoth.js - for now, notify user
-        setFileContent(`[Word Document: ${file.name} - Please save as PDF or copy/paste text for full analysis]`);
       } else {
         // Try to read as text
         const text = await file.text();
         setFileContent(text);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error reading file:', error);
-      setFileContent(`[Error reading file: ${file.name}. Please try copy/pasting the text instead.]`);
+      setFileError(error.message || 'Error reading file');
     } finally {
       setFileLoading(false);
     }
@@ -113,6 +104,7 @@ export default function DocumentAnalysisPage() {
   const removeFile = () => {
     setUploadedFile(null);
     setFileContent('');
+    setFileError('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -262,7 +254,7 @@ export default function DocumentAnalysisPage() {
                 ref={fileInputRef}
                 type="file"
                 onChange={handleFileInput}
-                accept=".txt,.md,.pdf,.docx,.doc"
+                accept=".txt,.md,.pdf"
                 className="hidden"
               />
               
@@ -290,14 +282,14 @@ export default function DocumentAnalysisPage() {
                   <p className="text-xs text-slate-400">
                     {(uploadedFile.size / 1024).toFixed(1)} KB
                   </p>
-                  {fileContent && !fileContent.startsWith('[') && (
+                  {fileContent && (
                     <p className="text-xs text-green-400">
                       ✓ {fileContent.length.toLocaleString()} chars extracted
                     </p>
                   )}
-                  {fileContent && fileContent.startsWith('[') && (
-                    <p className="text-xs text-yellow-400">
-                      ⚠ {fileContent}
+                  {fileError && (
+                    <p className="text-xs text-red-400">
+                      ⚠ {fileError}
                     </p>
                   )}
                 </div>
@@ -357,7 +349,7 @@ export default function DocumentAnalysisPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-4 border-t border-slate-700 bg-[#1e293b]">
-                {uploadedFile && fileContent && !fileContent.startsWith('[') && (
+                {uploadedFile && fileContent && (
                   <div className="mb-3 flex items-center gap-2 text-xs text-green-400">
                     <FileText className="h-3 w-3" />
                     <span>Ready to analyze: {uploadedFile.name}</span>
